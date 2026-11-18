@@ -1757,3 +1757,17 @@ Same rules and format as session 2.
   a library user running from another folder gets a second cache. Documented in docs/python-api.md.
 - **2026-11-18 · checked:** 304 tests pass (5 new, offline). On real data: KO's ROE 46.0% with its 10-K
   link, derived liabilities with their derivation, the red-flag verdicts, `search("coca")`.
+
+## S11 Task 2 — PUBLISHING.md and the publish workflow
+
+- **2026-11-18 · decision:** trusted publishing (OIDC) with `pypa/gh-action-pypi-publish`, no API token.
+  `publish.yml`: a manual run → TestPyPI; a published GitHub release → PyPI. Both build once with
+  `uv build` after running the tests, and the release path first checks that the tag is `v` + the version
+  in pyproject.toml. Two GitHub environments (`testpypi`, `pypi`); PUBLISHING.md suggests a required
+  reviewer on `pypi`, so a release waits for the owner's click.
+- **2026-11-18 · "disabled until I add the PyPI project":** every job has
+  `if: vars.PYPI_PUBLISHING == 'true'`, a repository variable that doesn't exist yet, so releases and
+  manual runs do nothing until it's set (step 4). **Rejected:** a commented-out workflow (has to be edited
+  to turn on) or `if: false` (same).
+- **2026-11-18 · checked:** the YAML parses and the jobs' conditions read as intended. Not run on GitHub
+  (it can't do anything until the PyPI side exists).
