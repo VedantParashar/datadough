@@ -52,11 +52,7 @@ QUOTE_MINUTES = 15  # how long a share price is reused before asking Yahoo Finan
 def load(ticker: str) -> tuple[list[store.StoredLineItem], dict, dict]:
     """Rows, metrics by year and company info, (re)loading the company if the SEC download is newer."""
     info = edgar.fetch_company_info(ticker)  # also rejects unknown tickers before any parsing
-    downloaded = edgar.facts_downloaded_at(ticker)  # downloads again by itself after 7 days
-    rows = store.get_company(ticker)
-    if not rows or rows[0].loaded_at < downloaded:
-        store.load_company(ticker)
-        rows = store.get_company(ticker)
+    rows = store.current_company(ticker)
     return rows, company_metrics(rows), info
 
 
