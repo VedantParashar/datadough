@@ -20,18 +20,23 @@ plain English with the company's own numbers.
 **Documentation:** https://vedantparashar.github.io/finance-analyzer/ (methodology, accuracy, case study,
 Python API).
 
-## What makes it different
+## How Datadough differs
 
-- **Trace any number.** Every line item and every input to a ratio links to the exact SEC filing it was
-  read from, with the form type and filing date. Calculated values say how they were calculated.
-- **Rules you can read.** [METHODOLOGY.md](docs/METHODOLOGY.md) explains how each number is chosen
-  (tag priority, restatements, stock splits, derived items, the balance check) with real examples:
-  Apple's restated FY2008, NVIDIA's splits, TSMC's bonds.
-- **Accuracy is measured, not assumed.** [ACCURACY.md](docs/ACCURACY.md) checks 10 headline figures
-  for 10 companies against the filings themselves: 93 of 95 match, and both differences are explained.
-- **Honest gaps.** A ratio that can't be calculated says why ("interest expense not reported for
-  FY2026") instead of showing a wrong number, and a missing value is never treated as zero.
-  [COVERAGE.md](docs/COVERAGE.md) lists what's found for 30 very different companies.
+- **Official SEC data.** Every statement figure comes from the XBRL data companies file with the US
+  Securities and Exchange Commission (SEC EDGAR) alongside their annual reports. Nothing is scraped
+  from third-party sites or estimated; only today's share price and exchange rates come from elsewhere
+  (Yahoo Finance), and they're used for the five valuation ratios alone.
+- **Traceable.** Every line item and every input to a ratio links to the exact filing it was read from,
+  with the form type and filing date, in the app and in the [Python API](docs/python-api.md). Values the app calculates (when a company doesn't report a total)
+  say how; [METHODOLOGY.md](docs/METHODOLOGY.md) explains each rule with real examples, including
+  restatements and stock splits.
+- **Validated.** [ACCURACY.md](docs/ACCURACY.md) checks 10 headline figures for 10 companies against
+  the filings' own statements: 93 of 95 match, and both differences are explained. A balance check runs on
+  every stored year, and [COVERAGE.md](docs/COVERAGE.md) lists what's found and missing for 30 very
+  different companies. A value that can't be calculated says why, and a missing value is never treated as
+  zero.
+- **Explained.** Every metric shows its formula filled in with the company's own numbers, what it means,
+  what a good value looks like and the common traps, written for students.
 
 ## Features
 

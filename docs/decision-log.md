@@ -1813,3 +1813,14 @@ Same rules and format as session 2.
 - **2026-11-18 · wiring:** a `lint` job in CI (`ruff check`, `ruff format --check`),
   `.pre-commit-config.yaml` (ruff-pre-commit `v0.17.5`, tag confirmed to exist; `uvx pre-commit run
   --all-files` passes), the Ruff badge in the README, and CONTRIBUTING.md's steps.
+
+## S11 Task 5 — README: "How Datadough differs"
+
+- **2026-11-18 · decision:** it replaces the earlier "What makes it different" section rather than
+  sitting next to it (the two said the same things). Four bullets, as asked: official SEC data,
+  traceable, validated, explained. Factual, no other project named.
+- **2026-11-18 · claims checked before keeping them:** a first draft said the Excel export's comments
+  carry the source filing; they hold derivations and inputs, not filing links, so that was removed. It
+  also called the XBRL data "the same filings their auditors sign off on": the statements are audited,
+  the XBRL tagging isn't, so it now says the data is filed alongside the annual report. "Only the share
+  price comes from elsewhere" became "share price and exchange rates", which is accurate.
