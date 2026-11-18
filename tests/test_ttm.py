@@ -15,10 +15,10 @@ def point(end, val, form="10-Q"):
 
 # Calendar fiscal years. 2024: quarters of 10, 20, 30, 40 = 100. 2025: 15, 25, then 35 so far.
 REVENUE = [
-    flow("2024-01-01", "2024-03-31", 10),                       # Q1 on its own
-    flow("2024-01-01", "2024-06-30", 30),                       # Q2 only as six months so far
-    flow("2024-07-01", "2024-09-30", 30),                       # Q3 on its own...
-    flow("2024-01-01", "2024-09-30", 60),                       # ...and as nine months so far
+    flow("2024-01-01", "2024-03-31", 10),  # Q1 on its own
+    flow("2024-01-01", "2024-06-30", 30),  # Q2 only as six months so far
+    flow("2024-07-01", "2024-09-30", 30),  # Q3 on its own...
+    flow("2024-01-01", "2024-09-30", 60),  # ...and as nine months so far
     flow("2024-01-01", "2024-12-31", 100, form="10-K"),
     flow("2025-01-01", "2025-03-31", 15),
     flow("2025-04-01", "2025-06-30", 25),
@@ -38,9 +38,9 @@ def test_quarters_are_as_reported_or_worked_out_from_the_year_so_far():
     quarters = {end: (value, derived) for end, (value, derived, _) in parse._quarters(REVENUE).items()}
     assert quarters == {
         "2024-03-31": (10, False),
-        "2024-06-30": (20, True),   # 30 for six months − 10
+        "2024-06-30": (20, True),  # 30 for six months − 10
         "2024-09-30": (30, False),
-        "2024-12-31": (40, True),   # Q4 = 100 for the year − 60 for nine months
+        "2024-12-31": (40, True),  # Q4 = 100 for the year − 60 for nine months
         "2025-03-31": (15, False),
         "2025-06-30": (25, False),
         "2025-09-30": (35, False),
@@ -99,33 +99,43 @@ def test_twelve_week_quarters_are_recognised():
     """Costco's year: three 12-week quarters, then 16 weeks. Cash flow comes only for the year so far."""
     facts = [
         flow("2024-09-02", "2024-11-24", 10),
-        flow("2024-09-02", "2025-02-16", 22),               # 24 weeks so far
-        flow("2024-09-02", "2025-05-11", 36),               # 36 weeks so far
+        flow("2024-09-02", "2025-02-16", 22),  # 24 weeks so far
+        flow("2024-09-02", "2025-05-11", 36),  # 36 weeks so far
         flow("2024-09-02", "2025-08-31", 56, form="10-K"),  # 52 weeks
     ]
     assert {end: value for end, (value, _, _) in parse._quarters(facts).items()} == {
-        "2024-11-24": 10, "2025-02-16": 12, "2025-05-11": 14, "2025-08-31": 20,
+        "2024-11-24": 10,
+        "2025-02-16": 12,
+        "2025-05-11": 14,
+        "2025-08-31": 20,
     }
 
 
 def test_a_split_seen_in_several_later_reports_is_counted_once_and_figures_share_one_basis():
     """A 4-for-1 split in mid-2025: each later report restates one more old quarter on the new basis."""
+
     def per_share(old_basis):
         return [
             flow("2025-01-01", "2025-03-31", old_basis[0], filed="2025-04-20", accn="Q1"),
-            flow("2025-04-01", "2025-06-30", old_basis[1] / 4, filed="2025-07-20", accn="Q2"),   # first report after the split
+            flow(
+                "2025-04-01", "2025-06-30", old_basis[1] / 4, filed="2025-07-20", accn="Q2"
+            ),  # first report after the split
             flow("2025-01-01", "2025-06-30", (old_basis[0] + old_basis[1]) / 4, filed="2025-07-20", accn="Q2"),
             flow("2024-04-01", "2024-06-30", 2.0, filed="2024-07-20", accn="Q2-24"),
-            flow("2024-04-01", "2024-06-30", 0.5, filed="2025-07-20", accn="Q2"),                # restated: first sighting
+            flow("2024-04-01", "2024-06-30", 0.5, filed="2025-07-20", accn="Q2"),  # restated: first sighting
             flow("2024-07-01", "2024-09-30", 2.4, filed="2024-10-20", accn="Q3-24"),
-            flow("2024-07-01", "2024-09-30", 0.6, filed="2025-10-20", accn="Q3"),                # restated: second sighting
+            flow("2024-07-01", "2024-09-30", 0.6, filed="2025-10-20", accn="Q3"),  # restated: second sighting
             flow("2025-01-01", "2025-03-31", old_basis[0] / 4, filed="2026-04-20", accn="Q1-26"),
         ]
 
     income = [{**f, "val": 100} for f in per_share([4.0, 4.4])]
-    facts = {"facts": {"us-gaap": {
-        "EarningsPerShareDiluted": {"units": {"USD/shares": per_share([4.0, 4.4])}},
-        "NetIncomeLoss": {"units": {"USD": income}},
-        "Assets": {"units": {"USD": [point("2025-06-30", 1000)]}},
-    }}}
+    facts = {
+        "facts": {
+            "us-gaap": {
+                "EarningsPerShareDiluted": {"units": {"USD/shares": per_share([4.0, 4.4])}},
+                "NetIncomeLoss": {"units": {"USD": income}},
+                "Assets": {"units": {"USD": [point("2025-06-30", 1000)]}},
+            }
+        }
+    }
     assert parse._splits(facts, parse.ITEMS["diluted_eps"], quarterly=True) == {"2025-07-20": 4}

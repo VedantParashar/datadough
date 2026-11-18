@@ -65,8 +65,14 @@ def get_company(ticker: str) -> Company:
     ticker = _ticker(ticker)
     info, rows = edgar.fetch_company_info(ticker), store.current_company(ticker)
     return Company(
-        ticker, info["name"], edgar.get_cik(ticker), info["sic"], info["industry"], info.get("exchange", ""),
-        display.currency(rows), tuple(sorted({row.fiscal_year_end for row in rows})),
+        ticker,
+        info["name"],
+        edgar.get_cik(ticker),
+        info["sic"],
+        info["industry"],
+        info.get("exchange", ""),
+        display.currency(rows),
+        tuple(sorted({row.fiscal_year_end for row in rows})),
     )
 
 
@@ -81,8 +87,12 @@ def line_items(ticker: str) -> pd.DataFrame:
     return pd.DataFrame(
         [
             {
-                "fiscal_year_end": row.fiscal_year_end, "item": row.item, "value": row.value, "unit": row.unit,
-                "derivation": row.derivation, "accession": row.accn,
+                "fiscal_year_end": row.fiscal_year_end,
+                "item": row.item,
+                "value": row.value,
+                "unit": row.unit,
+                "derivation": row.derivation,
+                "accession": row.accn,
                 **dict(zip(("form", "filed", "source_url"), sources.get(row.accn, ("", "", "")))),
             }
             for row in rows
@@ -93,9 +103,15 @@ def line_items(ticker: str) -> pd.DataFrame:
 def _metric_rows(name: str, end: date, metric: Metric, sources: dict) -> dict:
     urls = list(dict.fromkeys(sources[accn][2] for accn in metric.sources.values() if accn in sources))
     return {
-        "fiscal_year_end": end, "metric": name, "label": display.LABELS[name], "value": metric.value,
-        "formula": FORMULA_TEXT[name], "inputs": dict(metric.inputs), "reason": metric.reason,
-        "notes": "; ".join(metric.notes), "source_urls": urls,
+        "fiscal_year_end": end,
+        "metric": name,
+        "label": display.LABELS[name],
+        "value": metric.value,
+        "formula": FORMULA_TEXT[name],
+        "inputs": dict(metric.inputs),
+        "reason": metric.reason,
+        "notes": "; ".join(metric.notes),
+        "source_urls": urls,
     }
 
 
@@ -132,5 +148,7 @@ def red_flags(ticker: str) -> pd.DataFrame:
     the score can't be calculated).
     """
     return _table(
-        ticker, display.RED_FLAGS, lambda name, value: {"verdict": "" if value is None else display.verdict(name, value)}
+        ticker,
+        display.RED_FLAGS,
+        lambda name, value: {"verdict": "" if value is None else display.verdict(name, value)},
     )

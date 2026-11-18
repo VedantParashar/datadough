@@ -1,5 +1,6 @@
 from datetime import date
 
+import duckdb
 import pytest
 
 from finance_analyzer import store
@@ -80,7 +81,7 @@ def test_failed_save_undoes_the_whole_load(monkeypatch):
 
     bad_row = LineItemRow("diluted_eps", YEAR_END, None, "A", "")  # value can't be NULL
     parser_returns(monkeypatch, [LineItemRow("revenue", YEAR_END, 999, "A", ""), bad_row])
-    with pytest.raises(Exception):
+    with pytest.raises(duckdb.ConstraintException):  # the NULL value breaks the NOT NULL column
         store.load_company("TEST")
 
     saved = store.get_company("TEST")

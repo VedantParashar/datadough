@@ -48,12 +48,13 @@ uv run pytest
    git switch -c short-description-of-change
    ```
 2. Make **one** change. Keep it small enough to review in a few minutes.
-3. Run `uv run pytest`.
+3. Run `uv run pytest`, then `uv run ruff check --fix .` and `uv run ruff format .` (or once,
+   `uvx pre-commit install`, which runs Ruff on every commit).
 4. Commit with a message that says what changed, in the present tense
    (e.g. `add fallback tag for interest expense`).
 5. Push the branch and open a pull request against `master`. Say what you changed, why, and how you
    checked it. Link the issue it fixes (`Closes #12`).
-6. Wait for both checks (`pytest` and `docker`) to pass. `master` is never pushed to directly.
+6. Wait for the three checks (`pytest`, `lint` and `docker`) to pass. `master` is never pushed to directly.
 
 ## Fixing a company's data
 

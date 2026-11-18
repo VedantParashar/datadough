@@ -4,8 +4,13 @@ from finance_analyzer import peers
 
 B = 1e9
 COMPANIES = {
-    "BIG": [3571, 400 * B], "MID": [3571, 100 * B], "SMALL": [3571, 20 * B], "TINY": [3571, 1 * B],
-    "COUSIN": [3572, 90 * B], "COUSIN2": [3577, 5 * B], "OTHER": [2080, 100 * B],
+    "BIG": [3571, 400 * B],
+    "MID": [3571, 100 * B],
+    "SMALL": [3571, 20 * B],
+    "TINY": [3571, 1 * B],
+    "COUSIN": [3572, 90 * B],
+    "COUSIN2": [3577, 5 * B],
+    "OTHER": [2080, 100 * B],
 }
 
 
@@ -18,7 +23,11 @@ def test_same_code_first_closest_revenue_first_then_the_three_digit_group():
     suggested = peers.suggest({"MID"}, 3571)
     # By ratio: 400 is 4× away, 20 is 5× away, 1 is 100× away. Then the 357x group: 90 before 5.
     assert [(p.ticker, p.same_code) for p in suggested] == [
-        ("BIG", True), ("SMALL", True), ("TINY", True), ("COUSIN", False), ("COUSIN2", False)
+        ("BIG", True),
+        ("SMALL", True),
+        ("TINY", True),
+        ("COUSIN", False),
+        ("COUSIN2", False),
     ]
     assert suggested[0].revenue == 400 * B
 

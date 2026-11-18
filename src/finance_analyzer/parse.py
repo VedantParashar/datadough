@@ -16,10 +16,10 @@ from finance_analyzer.schema import (
     LIABILITIES_AND_EQUITY,
     LONG_TERM_DEBT_LAST_RESORT,
     MARKETABLE_SECURITIES_ANY_TERM,
-    OPERATING_EXPENSES,
     MARKETABLE_SECURITIES_NONCURRENT,
     MINORITY_INTEREST,
     NONCURRENT_BONDS,
+    OPERATING_EXPENSES,
     OTHER_SHORT_TERM_INVESTMENTS,
     SGA_PARTS,
     SHORT_TERM_BORROWING_PARTS,
@@ -70,12 +70,7 @@ def _is_full_year(fact: dict) -> bool:
 
 def _fiscal_year_ends(facts: dict) -> set[str]:
     """Every date a full-year flow ended, which is how instants recognise a year-end."""
-    return {
-        end
-        for item in ITEMS.values()
-        if item.period_type == "flow"
-        for end, _, _ in _annual_values(facts, item)
-    }
+    return {end for item in ITEMS.values() if item.period_type == "flow" for end, _, _ in _annual_values(facts, item)}
 
 
 def reporting_currency(facts: dict) -> str:
@@ -114,7 +109,9 @@ def _candidates(facts: dict, item: LineItem) -> Iterator[dict]:
         is_annual = _is_full_year
     else:
         year_ends = _fiscal_year_ends(facts)
-        is_annual = lambda fact: "start" not in fact and fact["end"] in year_ends
+
+        def is_annual(fact: dict) -> bool:
+            return "start" not in fact and fact["end"] in year_ends
 
     currency = reporting_currency(facts)
     unit = item.unit.replace("USD", currency)
@@ -372,13 +369,19 @@ def _revenue_rows(facts: dict) -> list[LineItemRow]:
     rows = []
     for row in _item_rows(facts, ITEMS["revenue"]):
         smaller = next(
-            (other for other in others[row.fiscal_year_end] for scale in SCALE_SLIPS
-             if other > 0 and math.isclose(other * scale, row.value, rel_tol=0.001)),
+            (
+                other
+                for other in others[row.fiscal_year_end]
+                for scale in SCALE_SLIPS
+                if other > 0 and math.isclose(other * scale, row.value, rel_tol=0.001)
+            ),
             None,
         )
         if smaller is not None:
             times = f"{row.value / smaller:,.0f}"
-            row = row._replace(value=smaller, derivation=f"revenue was also tagged {times}× larger; the smaller figure is used")
+            row = row._replace(
+                value=smaller, derivation=f"revenue was also tagged {times}× larger; the smaller figure is used"
+            )
         rows.append(row)
     return rows
 
@@ -440,6 +443,12 @@ def _line_items(facts: dict, financial: bool = False) -> list[LineItemRow]:
     return sorted(rows, key=lambda row: (order.index(row.item), row.fiscal_year_end))
 
 
+def _gives_eps(net_income: float, shares: float, eps: float) -> bool:
+    """Whether this share count turns net income into the filed EPS."""
+    # EPS is rounded to the cent; 2% more covers the usual gap between net income and income to shareholders.
+    return abs(net_income / shares - eps) <= max(0.006, 0.02 * abs(eps))
+
+
 def _shares_filed_in_thousands(rows: list[LineItemRow]) -> list[LineItemRow]:
     """Diluted share counts filed as thousands of shares, multiplied back (#72; NVIDIA FY2008–09).
 
@@ -451,12 +460,13 @@ def _shares_filed_in_thousands(rows: list[LineItemRow]) -> list[LineItemRow]:
     for row in rows:
         income, eps = by_key.get(("net_income", row.fiscal_year_end)), by_key.get(("diluted_eps", row.fiscal_year_end))
         if row.item == "diluted_shares" and income and eps and eps.value and row.value > 0:
-            # EPS is rounded to the cent; 2% more covers the usual gap between net income and income to shareholders.
-            tolerance = max(0.006, 0.02 * abs(eps.value))
-            fits = lambda count: abs(income.value / count - eps.value) <= tolerance
-            if not fits(row.value) and fits(row.value * 1000):
+            if not _gives_eps(income.value, row.value, eps.value) and _gives_eps(
+                income.value, row.value * 1000, eps.value
+            ):
                 note = "filed in thousands of shares, ×1,000 (net income ÷ diluted EPS gives that count)"
-                row = row._replace(value=row.value * 1000, derivation=f"{row.derivation}; {note}" if row.derivation else note)
+                row = row._replace(
+                    value=row.value * 1000, derivation=f"{row.derivation}; {note}" if row.derivation else note
+                )
         fixed.append(row)
     return fixed
 
@@ -476,19 +486,25 @@ def _derived_operating_income(facts: dict, rows: list[LineItemRow], financial: b
     for row in rows:
         by_item[row.item][row.fiscal_year_end] = row
     operating = _by_end(facts, OPERATING_EXPENSES)
-    revenue, cost, pretax, interest = (by_item[name] for name in ("revenue", "cost_of_revenue", "pretax_income", "interest_expense"))
+    revenue, cost, pretax, interest = (
+        by_item[name] for name in ("revenue", "cost_of_revenue", "pretax_income", "interest_expense")
+    )
     derived = []
     for end in sorted(set(revenue) | set(pretax)):
         if end in by_item["operating_income"]:
             continue
         if end in revenue and end in cost and end in operating:
             value, accn = revenue[end].value - cost[end].value - operating[end][0], operating[end][1]
-            derivation = ("operating income = revenue − cost of revenue − operating expenses (no operating income "
-                          "subtotal reported)")
+            derivation = (
+                "operating income = revenue − cost of revenue − operating expenses (no operating income "
+                "subtotal reported)"
+            )
         elif end in pretax and end in interest and not financial:  # a missing interest figure isn't zero
             value, accn = pretax[end].value + interest[end].value, pretax[end].accn
-            derivation = ("EBIT = pretax income + interest expense, used because no operating income subtotal is "
-                          "reported; unlike operating income it also counts other income and losses")
+            derivation = (
+                "EBIT = pretax income + interest expense, used because no operating income subtotal is "
+                "reported; unlike operating income it also counts other income and losses"
+            )
         else:
             continue
         derived.append(LineItemRow("operating_income", end, value, accn, derivation))
@@ -602,7 +618,9 @@ def _quarters(tag_facts: list[dict]) -> dict[str, tuple[float, bool, dict]]:
         opened = date.fromisoformat(year_ends[index - 1]) if index else date.fromisoformat(year_end) - timedelta(371)
         closes = date.fromisoformat(year_end) if year_end else date.max
         so_far: dict[int, float] = {}  # quarter number -> total for the year up to that quarter
-        for end in sorted({end for end, length in latest if length != "Y" and opened < date.fromisoformat(end) < closes}):
+        for end in sorted(
+            {end for end, length in latest if length != "Y" and opened < date.fromisoformat(end) < closes}
+        ):
             number = round((date.fromisoformat(end) - opened).days / 91.31)
             alone, to_date = latest.get((end, "Q")), latest.get((end, {2: "H", 3: "N"}.get(number, "")))
             before = so_far.get(number - 1, 0 if number == 1 else None)
@@ -624,12 +642,14 @@ def _quarters(tag_facts: list[dict]) -> dict[str, tuple[float, bool, dict]]:
 
 def _same_quarter_ends(facts: dict, currency: str) -> list[str]:
     """The latest balance sheet date, then the same quarter end in each earlier year; newest first."""
-    ends = sorted({
-        fact["end"]
-        for taxonomy in ("us-gaap", "ifrs-full")
-        for fact in facts.get("facts", {}).get(taxonomy, {}).get("Assets", {}).get("units", {}).get(currency, [])
-        if fact["form"] in QUARTERLY_FORMS
-    })
+    ends = sorted(
+        {
+            fact["end"]
+            for taxonomy in ("us-gaap", "ifrs-full")
+            for fact in facts.get("facts", {}).get(taxonomy, {}).get("Assets", {}).get("units", {}).get(currency, [])
+            if fact["form"] in QUARTERLY_FORMS
+        }
+    )
     chosen = ends[-1:]
     while chosen:
         target = date.fromisoformat(chosen[-1]) - timedelta(365)
@@ -672,10 +692,16 @@ def _as_years_ending(facts: dict, ends: list[str]) -> dict:
                     sources = [quarters[quarter][2] for quarter in last_four]
                     # A weighted-average share count can't be added up: use the one for the latest period reported.
                     value = sources[-1]["val"] if count else sum(quarters[quarter][0] for quarter in last_four)
-                    new.append({
-                        "start": (date.fromisoformat(end) - timedelta(364)).isoformat(), "end": end, "val": value,
-                        "form": "10-K", "filed": max(source["filed"] for source in sources), "accn": sources[-1]["accn"],
-                    })
+                    new.append(
+                        {
+                            "start": (date.fromisoformat(end) - timedelta(364)).isoformat(),
+                            "end": end,
+                            "val": value,
+                            "form": "10-K",
+                            "filed": max(source["filed"] for source in sources),
+                            "accn": sources[-1]["accn"],
+                        }
+                    )
                 if new:
                     restated["facts"].setdefault(taxonomy, {}).setdefault(tag, {"units": {}})["units"][unit] = new
     return restated
@@ -703,8 +729,15 @@ def trailing_twelve_months(facts: dict, financial: bool = False) -> list[LineIte
     return rows
 
 
-QUARTERLY_ITEMS = ("revenue", "cost_of_revenue", "operating_income", "net_income", "diluted_eps",
-                   "operating_cash_flow", "capital_expenditure")
+QUARTERLY_ITEMS = (
+    "revenue",
+    "cost_of_revenue",
+    "operating_income",
+    "net_income",
+    "diluted_eps",
+    "operating_cash_flow",
+    "capital_expenditure",
+)
 
 
 def quarterly_values(facts: dict, count: int = 8) -> dict[str, dict[str, tuple[float, bool]]]:

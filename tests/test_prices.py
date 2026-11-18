@@ -58,8 +58,12 @@ def test_fetch_exchange_rate_asks_for_the_dollar_pair(monkeypatch):
 
 @pytest.mark.parametrize(
     "fast_info, message",
-    [(KeyError("currentTradingPeriod"), "KeyError"), (ConnectionError("offline"), "ConnectionError"),
-     ({"lastPrice": None}, "returned no US dollar to TWD rate"), ({"lastPrice": 0}, "returned no US dollar to TWD rate")],
+    [
+        (KeyError("currentTradingPeriod"), "KeyError"),
+        (ConnectionError("offline"), "ConnectionError"),
+        ({"lastPrice": None}, "returned no US dollar to TWD rate"),
+        ({"lastPrice": 0}, "returned no US dollar to TWD rate"),
+    ],
 )
 def test_fetch_exchange_rate_turns_every_failure_into_price_unavailable(monkeypatch, fast_info, message):
     fake_yfinance(monkeypatch, fast_info)

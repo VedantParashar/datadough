@@ -35,10 +35,15 @@ def test_the_list_is_the_thirty_stress_test_companies():
 
 def test_a_download_is_swapped_in_whole(monkeypatch, tmp_path):
     """The file must never be visible half-written: it's written under another name, then renamed."""
+
     class Response:
         text = '{"ok": true}'
-        def raise_for_status(self): pass
-        def json(self): return {"ok": True}
+
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"ok": True}
 
     monkeypatch.setenv("SEC_USER_AGENT", "Test test@example.com")
     monkeypatch.setattr(edgar.httpx, "get", lambda *args, **kwargs: Response())

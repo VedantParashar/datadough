@@ -1,7 +1,6 @@
 import pytest
 
 from finance_analyzer import parse
-
 from finance_analyzer.parse import _annual_values, _line_items, annual_line_items, annual_revenue, balance_checks
 from finance_analyzer.schema import ITEMS
 
@@ -173,9 +172,7 @@ def test_revenue_falls_back_to_goods_tag():
     facts = {
         "facts": {
             "us-gaap": {
-                "SalesRevenueGoodsNet": {
-                    "units": {"USD": [fact("2017-10-01", YEAR_END, 7, "10-K", FILED, "G")]}
-                }
+                "SalesRevenueGoodsNet": {"units": {"USD": [fact("2017-10-01", YEAR_END, 7, "10-K", FILED, "G")]}}
             }
         }
     }
@@ -256,13 +253,17 @@ def test_stacked_splits_multiply():
 
 
 def test_split_ratio_rejected_when_net_income_moved():
-    halved_profit = lambda end, accn: 500 if accn == "B" else 1000
+    def halved_profit(end, accn):
+        return 500 if accn == "B" else 1000
+
     facts = per_share_company(one_change(9.0, 4.5, 8.0), income=halved_profit)
     assert eps_rows(facts) == [(FY1, 8.0, ""), (FY2, 4.5, "")]
 
 
 def test_split_accepted_with_small_restatement():
-    restated = lambda end, accn: 998 if accn == "B" else 1000  # KO's 2012 split moved income 0.2%
+    def restated(end, accn):
+        return 998 if accn == "B" else 1000  # KO's 2012 split moved income 0.2%
+
     facts = per_share_company(one_change(9.0, 4.5, 8.0), income=restated)
     assert eps_rows(facts) == [(FY1, 4.0, "split-adjusted ÷2"), (FY2, 4.5, "")]
 
@@ -517,9 +518,26 @@ def test_fund_with_no_statement_data_is_reported_as_such(monkeypatch):
 
 
 def test_company_with_no_annual_report_is_reported_as_such(monkeypatch):
-    quarterly_only = {"facts": {"us-gaap": {"Revenues": {"units": {"USD": [
-        {"start": "2026-01-01", "end": "2026-03-31", "val": 5, "accn": "a", "form": "10-Q", "filed": "2026-05-01"}
-    ]}}}}}
+    quarterly_only = {
+        "facts": {
+            "us-gaap": {
+                "Revenues": {
+                    "units": {
+                        "USD": [
+                            {
+                                "start": "2026-01-01",
+                                "end": "2026-03-31",
+                                "val": 5,
+                                "accn": "a",
+                                "form": "10-Q",
+                                "filed": "2026-05-01",
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
     monkeypatch.setattr("finance_analyzer.parse.fetch_company_facts", lambda ticker: quarterly_only)
     with pytest.raises(parse.NoAnnualReports, match=r"NEWCO has no annual report \(10-K, 20-F or 40-F\)"):
         annual_line_items("newco")
@@ -527,21 +545,32 @@ def test_company_with_no_annual_report_is_reported_as_such(monkeypatch):
 
 def ifrs_company(form="20-F", **extra):
     """A foreign filer reporting under IFRS in euros, with a US dollar translation of total assets."""
-    eur = lambda tag_facts: {"units": {"EUR": tag_facts}}
-    year = lambda val, accn: {**fact("2025-01-01", "2025-12-31", val, form, "2026-03-01", accn)}
-    point = lambda val, accn: {"end": "2025-12-31", "val": val, "form": form, "filed": "2026-03-01", "accn": accn}
+
+    def eur(tag_facts):
+        return {"units": {"EUR": tag_facts}}
+
+    def year(val, accn):
+        return {**fact("2025-01-01", "2025-12-31", val, form, "2026-03-01", accn)}
+
+    def point(val, accn):
+        return {"end": "2025-12-31", "val": val, "form": form, "filed": "2026-03-01", "accn": accn}
+
     prior = {"end": "2024-12-31", "val": 900, "form": form, "filed": "2026-03-01", "accn": "A"}
-    return {"facts": {"ifrs-full": {
-        "Revenue": eur([year(400, "A")]),
-        "ProfitLossAttributableToOwnersOfParent": eur([year(50, "A")]),
-        "DilutedEarningsLossPerShare": {"units": {"EUR/shares": [year(2.5, "A")]}},
-        "AdjustedWeightedAverageShares": {"units": {"shares": [year(20, "A")]}},
-        "Assets": {"units": {"EUR": [point(1000, "A"), prior], "USD": [point(1100, "A")]}},
-        "Liabilities": eur([point(600, "A")]),
-        "Equity": eur([point(400, "A")]),
-        "EquityAndLiabilities": eur([point(1000, "A")]),
-        **extra,
-    }}}
+    return {
+        "facts": {
+            "ifrs-full": {
+                "Revenue": eur([year(400, "A")]),
+                "ProfitLossAttributableToOwnersOfParent": eur([year(50, "A")]),
+                "DilutedEarningsLossPerShare": {"units": {"EUR/shares": [year(2.5, "A")]}},
+                "AdjustedWeightedAverageShares": {"units": {"shares": [year(20, "A")]}},
+                "Assets": {"units": {"EUR": [point(1000, "A"), prior], "USD": [point(1100, "A")]}},
+                "Liabilities": eur([point(600, "A")]),
+                "Equity": eur([point(400, "A")]),
+                "EquityAndLiabilities": eur([point(1000, "A")]),
+                **extra,
+            }
+        }
+    }
 
 
 def test_reporting_currency_is_the_one_most_total_assets_are_in():
@@ -554,9 +583,13 @@ def test_reporting_currency_is_the_one_most_total_assets_are_in():
 def test_ifrs_annual_reports_are_read_in_the_reporting_currency(form):
     rows = {row.item: row.value for row in _line_items(ifrs_company(form))}
     assert rows == {
-        "revenue": 400, "net_income": 50, "diluted_eps": 2.5, "diluted_shares": 20,
+        "revenue": 400,
+        "net_income": 50,
+        "diluted_eps": 2.5,
+        "diluted_shares": 20,
         "total_assets": 1000,  # the euro figure, not the 1,100 dollar translation
-        "total_liabilities": 600, "total_equity": 400,
+        "total_liabilities": 600,
+        "total_equity": 400,
         "shareholders_equity": 400,  # no parent-only figure and no minority interest, so it's total equity
     }
     assert balance_checks(ifrs_company(form))[-1] == ("2025-12-31", True, 0, False)
@@ -567,14 +600,17 @@ def test_interim_foreign_reports_are_ignored():
 
 
 def test_ifrs_short_term_debt_is_built_from_its_parts():
-    point = lambda val: {"end": "2025-12-31", "val": val, "form": "20-F", "filed": "2026-03-01", "accn": "A"}
+    def point(val):
+        return {"end": "2025-12-31", "val": val, "form": "20-F", "filed": "2026-03-01", "accn": "A"}
+
     facts = ifrs_company(
         ShorttermBorrowings={"units": {"EUR": [point(30)]}},
         CurrentPortionOfLongtermBorrowings={"units": {"EUR": [point(12)]}},
     )
     row = next(row for row in _line_items(facts) if row.item == "short_term_debt")
     assert (row.value, row.derivation) == (
-        42, "short-term debt = short-term borrowings + current maturities of long-term debt"
+        42,
+        "short-term debt = short-term borrowings + current maturities of long-term debt",
     )
 
 
@@ -587,13 +623,16 @@ def test_every_schema_item_has_an_ifrs_tag_list():
 
 def test_a_year_reported_under_both_taxonomies_uses_only_the_latest_one():
     """Toyota's FY2020: first filed under US GAAP, then restated under IFRS in the next report."""
+
     def old(val):
         return {"end": "2025-12-31", "val": val, "form": "20-F", "filed": "2026-02-01", "accn": "GAAP"}
 
     facts = ifrs_company()
     facts["facts"]["us-gaap"] = {
         "Assets": {"units": {"EUR": [old(990)]}},
-        "TemporaryEquityCarryingAmountIncludingPortionAttributableToNoncontrollingInterests": {"units": {"EUR": [old(40)]}},
+        "TemporaryEquityCarryingAmountIncludingPortionAttributableToNoncontrollingInterests": {
+            "units": {"EUR": [old(40)]}
+        },
         "InventoryNet": {"units": {"EUR": [old(7)]}},
     }
     items = {row.item for row in _line_items(facts) if row.fiscal_year_end == "2025-12-31"}
@@ -630,16 +669,23 @@ def test_cash_uses_the_restricted_cash_total_only_for_years_without_plain_cash()
     facts = company(
         CashAndCashEquivalentsAtCarryingValue=[instant(earlier, 50, "2017-11-03", "OLD")],
         CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents=[
-            instant(earlier, 55, FILED, "NEW"), instant(YEAR_END, 70, FILED, "NEW"),
+            instant(earlier, 55, FILED, "NEW"),
+            instant(YEAR_END, 70, FILED, "NEW"),
         ],
     )
-    facts["facts"]["us-gaap"]["Revenues"]["units"]["USD"].append(fact("2016-10-01", earlier, 1, "10-K", "2017-11-03", "R0"))
+    facts["facts"]["us-gaap"]["Revenues"]["units"]["USD"].append(
+        fact("2016-10-01", earlier, 1, "10-K", "2017-11-03", "R0")
+    )
     cash = [(row.fiscal_year_end, row.value, row.derivation) for row in _line_items(facts) if row.item == "cash"]
     assert cash == [(earlier, 50, ""), (YEAR_END, 70, "includes restricted cash")]
 
 
 def ifrs_debt(borrowings, noncurrent_bonds, current_bonds=None):
-    point = lambda val: {"units": {"EUR": [{"end": "2025-12-31", "val": val, "form": "20-F", "filed": "2026-03-01", "accn": "A"}]}}
+    def point(val):
+        return {
+            "units": {"EUR": [{"end": "2025-12-31", "val": val, "form": "20-F", "filed": "2026-03-01", "accn": "A"}]}
+        }
+
     extra = {"NoncurrentPortionOfNoncurrentBondsIssued": point(noncurrent_bonds)}
     if borrowings is not None:
         extra["LongtermBorrowings"] = point(borrowings)
@@ -651,11 +697,11 @@ def ifrs_debt(borrowings, noncurrent_bonds, current_bonds=None):
 
 def test_ifrs_bonds_reported_apart_from_borrowings_are_added():
     """TSMC's shape: bank loans of 32 as borrowings, bonds of 927 on their own line."""
-    assert ifrs_debt(32, 927) == {
-        ("long_term_debt", 959, "borrowings + bonds issued, reported apart from borrowings")
-    }
+    assert ifrs_debt(32, 927) == {("long_term_debt", 959, "borrowings + bonds issued, reported apart from borrowings")}
     assert ifrs_debt(None, 927) == {("long_term_debt", 927, "bonds issued (no other borrowings reported)")}
-    assert ("short_term_debt", 70, "borrowings + bonds issued, reported apart from borrowings") in ifrs_debt(32, 927, 60)
+    assert ("short_term_debt", 70, "borrowings + bonds issued, reported apart from borrowings") in ifrs_debt(
+        32, 927, 60
+    )
 
 
 def test_ifrs_bonds_that_are_part_of_borrowings_are_not_counted_twice():
@@ -674,18 +720,29 @@ def test_us_gaap_companies_never_get_bonds_added():
 
 def test_revenue_tagged_twice_a_thousand_times_apart_takes_the_smaller():
     """Tigo Energy FY2025: $103,536,000 under one revenue tag, $103,536,000,000 under the preferred one."""
-    year = lambda val: fact("2017-10-01", YEAR_END, val, "10-K", FILED, "T")
+
+    def year(val):
+        return fact("2017-10-01", YEAR_END, val, "10-K", FILED, "T")
+
     facts = company()
     facts["facts"]["us-gaap"]["Revenues"] = {"units": {"USD": [year(103_536_000_000)]}}
-    facts["facts"]["us-gaap"]["RevenueFromContractWithCustomerExcludingAssessedTax"] = {"units": {"USD": [year(103_536_000)]}}
+    facts["facts"]["us-gaap"]["RevenueFromContractWithCustomerExcludingAssessedTax"] = {
+        "units": {"USD": [year(103_536_000)]}
+    }
     row = next(row for row in _line_items(facts) if row.item == "revenue")
-    assert (row.value, row.derivation) == (103_536_000, "revenue was also tagged 1,000× larger; the smaller figure is used")
+    assert (row.value, row.derivation) == (
+        103_536_000,
+        "revenue was also tagged 1,000× larger; the smaller figure is used",
+    )
 
 
 @pytest.mark.parametrize("other", [103_536_000 * 2, 51_768_000_000, 103_536_000_000])
 def test_revenue_tags_that_differ_by_anything_else_are_left_alone(other):
     """Goods-only revenue beside total revenue is normal; only an exact 1,000× or 1,000,000× is a slip."""
-    year = lambda val: fact("2017-10-01", YEAR_END, val, "10-K", FILED, "T")
+
+    def year(val):
+        return fact("2017-10-01", YEAR_END, val, "10-K", FILED, "T")
+
     facts = company()
     facts["facts"]["us-gaap"]["Revenues"] = {"units": {"USD": [year(103_536_000)]}}
     facts["facts"]["us-gaap"]["RevenueFromContractWithCustomerExcludingAssessedTax"] = {"units": {"USD": [year(other)]}}
@@ -707,9 +764,13 @@ def operating_income(**tags):
 
 
 def test_reported_operating_income_is_never_replaced():
-    tags = {"OperatingIncomeLoss": year(30), "OperatingExpenses": year(50), "CostOfRevenue": year(10),
-            "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": year(25),
-            "InterestExpense": year(4)}
+    tags = {
+        "OperatingIncomeLoss": year(30),
+        "OperatingExpenses": year(50),
+        "CostOfRevenue": year(10),
+        "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": year(25),
+        "InterestExpense": year(4),
+    }
     assert operating_income(**tags) == [(30, "")]
 
 
@@ -742,8 +803,10 @@ def test_filings_map_each_accession_number_to_its_form_and_date():
 )
 def test_share_counts_filed_in_thousands_are_multiplied_back(income, eps, shares, expected):
     facts = company(NetIncomeLoss=[fact("2017-10-01", YEAR_END, income, "10-K", FILED, "A")])
-    for tag, unit, value in (("EarningsPerShareDiluted", "USD/shares", eps),
-                             ("WeightedAverageNumberOfDilutedSharesOutstanding", "shares", shares)):
+    for tag, unit, value in (
+        ("EarningsPerShareDiluted", "USD/shares", eps),
+        ("WeightedAverageNumberOfDilutedSharesOutstanding", "shares", shares),
+    ):
         facts["facts"]["us-gaap"][tag] = {"units": {unit: [fact("2017-10-01", YEAR_END, value, "10-K", FILED, "A")]}}
     row = next(row for row in _line_items(facts) if row.item == "diluted_shares")
     assert row.value == expected and ("filed in thousands" in row.derivation) == (expected != shares)

@@ -181,7 +181,12 @@ def fetch_company_info(ticker: str) -> dict:
     cik = get_cik(ticker)
     data = _get_json(SUBMISSIONS_URL.format(cik=cik), _submissions_path(cik))
     exchange = (data.get("exchanges") or [""])[0] or ""  # e.g. "Nasdaq"; some companies list none
-    return {"name": data["name"], "sic": int(data["sic"] or 0), "industry": data["sicDescription"], "exchange": exchange}
+    return {
+        "name": data["name"],
+        "sic": int(data["sic"] or 0),
+        "industry": data["sicDescription"],
+        "exchange": exchange,
+    }
 
 
 def is_financial(sic: int) -> bool:

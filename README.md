@@ -8,6 +8,7 @@
 [![release](https://img.shields.io/github/v/release/VedantParashar/finance-analyzer)](https://github.com/VedantParashar/finance-analyzer/releases)
 [![license](https://img.shields.io/github/license/VedantParashar/finance-analyzer)](LICENSE)
 [![python](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 A free, open-source research app for students doing case studies, stock pitches and theses. Type a
 ticker: it reads the company's annual reports from SEC EDGAR, puts them on one standard set of line

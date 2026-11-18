@@ -3,12 +3,13 @@ from io import BytesIO
 
 import pytest
 from openpyxl import load_workbook
+from test_metrics import AAPL, KO, rows_from
+from test_red_flags import AAPL as AAPL_FLAGS
+from test_red_flags import KO as KO_FLAGS
 
 from finance_analyzer.display import LABELS
 from finance_analyzer.export import company_workbook
 from finance_analyzer.metrics import company_metrics
-from test_metrics import AAPL, KO, rows_from
-from test_red_flags import AAPL as AAPL_FLAGS, KO as KO_FLAGS
 
 
 def evaluate(book, sheet: str, formula: str) -> float:
@@ -64,15 +65,18 @@ def test_derivations_and_assumed_zeros_become_comments():
     assert inventory.value == 0 and inventory.comment.text == "assumed 0 (never reported)"
 
 
-@pytest.mark.parametrize("data, column, expected", [(AAPL_FLAGS, "E", (3.2024, 9, -2.5158, -0.03384)),
-                                                    (KO_FLAGS, "E", (4.5036, 7, -2.3499, 0.05550))])
+@pytest.mark.parametrize(
+    "data, column, expected",
+    [(AAPL_FLAGS, "E", (3.2024, 9, -2.5158, -0.03384)), (KO_FLAGS, "E", (4.5036, 7, -2.3499, 0.05550))],
+)
 def test_red_flag_scores_in_the_workbook_match_the_hand_calculations(data, column, expected):
     rows = rows_from(data)
     book = load_workbook(BytesIO(company_workbook("TEST", rows, company_metrics(rows))))
     sheet = book["Metrics"]
     row_of = {cell.value: cell.row for cell in sheet["A"]}
-    z, f, m, accruals = (sheet[f"{column}{row_of[LABELS[name]]}"] for name in
-                         ("altman_z", "piotroski_f", "beneish_m", "accruals_ratio"))
+    z, f, m, accruals = (
+        sheet[f"{column}{row_of[LABELS[name]]}"] for name in ("altman_z", "piotroski_f", "beneish_m", "accruals_ratio")
+    )
     assert evaluate(book, "Metrics", z.value[1:]) == pytest.approx(expected[0], abs=0.0001)
     assert evaluate(book, "Metrics", accruals.value[1:]) == pytest.approx(expected[3], abs=0.00001)
     assert f.value == expected[1] and m.value == pytest.approx(expected[2], abs=0.0001)
