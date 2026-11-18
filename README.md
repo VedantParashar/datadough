@@ -16,6 +16,9 @@ plain English with the company's own numbers.
 
 ![Demo: search for AAPL, open a metric's sources, see the Source column, compare AAPL, KO and NVDA](docs/demo.gif)
 
+**Documentation:** https://vedantparashar.github.io/finance-analyzer/ (methodology, accuracy, case study,
+Python API).
+
 ## What makes it different
 
 - **Trace any number.** Every line item and every input to a ratio links to the exact SEC filing it was

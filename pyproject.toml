@@ -29,6 +29,9 @@ build-backend = "uv_build"
 dev = [
     "pytest>=9.2.0",
 ]
+docs = [
+    "mkdocs-material>=9.8.1",
+]
 
 [tool.uv.build-backend]
 # Published as "datadough", imported as finance_analyzer (the module's name since the start).
