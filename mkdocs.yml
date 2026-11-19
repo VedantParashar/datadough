@@ -18,6 +18,7 @@ nav:
   - Coverage: COVERAGE.md
   - Case study: case-study-apple-vs-coca-cola.md
   - Python API: python-api.md
+  - MCP server: mcp.md
 
 theme:
   name: material

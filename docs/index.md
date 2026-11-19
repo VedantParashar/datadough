@@ -18,5 +18,6 @@ red-flag scores and valuation, each explained with the company's own numbers.
 - **[Coverage](COVERAGE.md):** what's found and what's missing for 30 very different companies.
 - **[Case study](case-study-apple-vs-coca-cola.md):** Apple vs Coca-Cola, made with the app's numbers.
 - **[Python API](python-api.md):** the same numbers as pandas DataFrames, with their source filings.
+- **[MCP server](mcp.md):** let Claude Desktop or another AI assistant look up the numbers and cite the filings.
 
 Not investment advice. Figures can contain errors: every one links to its filing so you can check it.

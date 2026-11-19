@@ -52,6 +52,8 @@ Python API).
   best and worst value in each row marked.
 - **Excel export** whose metric cells are live formulas over the line items.
 - **Shareable links** (`?ticker=AAPL`, `?compare=AAPL,KO`), peer suggestions, light and dark themes.
+- **Use it from code or an AI assistant:** a [Python API](docs/python-api.md) (pandas DataFrames with
+  source columns) and a read-only [MCP server](docs/mcp.md) for Claude Desktop.
 
 ## Supported companies
 

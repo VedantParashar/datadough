@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       # The tests use fake data only, so no SEC_USER_AGENT or network is needed.
-      - run: uv run --locked pytest
+      - run: uv run --locked --all-extras pytest  # --all-extras: the MCP server tests need the mcp extra
 
   lint:
     runs-on: ubuntu-latest

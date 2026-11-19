@@ -4,6 +4,41 @@ Every decision made during the Claude Code sessions that built this app, with th
 alternatives rejected, newest session summary first. (Kept as `AUTOPILOT_LOG.md` in the repo root until
 session 8.)
 
+## Summary of session 11 (2026-11-18)
+
+**Built:** all 6 queue tasks, each on its own branch and pull request, stacked in this order on #78
+(session 10's last pull request, still unmerged). Nothing is merged.
+
+| # | PR | Branch | What |
+|---|---|---|---|
+| 1 | #79 | `python-api` | `import finance_analyzer as dd`: search, get_company, line_items, metrics, red_flags (DataFrames with source columns); distribution renamed `datadough` |
+| 2 | #80 | `publishing` | PUBLISHING.md + trusted-publishing workflow, off until `PYPI_PUBLISHING` is set |
+| 3 | #81 | `docs-site` | MkDocs Material site over `docs/`, GitHub Pages workflow, README link |
+| 4 | #82 | `ruff` | Ruff check + format in CI and pre-commit; 131 findings handled; badge |
+| 5 | #83 | `readme-differs` | README "How Datadough differs" (official SEC data, traceable, validated, explained) |
+| 6 | #84 | `mcp-server` | read-only stdio MCP server (search, summary, metrics with sources), docs/mcp.md |
+
+310 tests pass locally with all extras (299 at the start; 11 new).
+
+**Worth your attention:**
+1. **Merge order:** #76–#78 (session 10) first, then #79–#84.
+2. **"datadough" is free** on PyPI and TestPyPI (checked 2026-11-18, nothing published). It's installed
+   as `datadough`, imported as `finance_analyzer`.
+3. **Settings for you:** PUBLISHING.md steps 1–4 (accounts, trusted publishers, environments, the
+   `PYPI_PUBLISHING` variable); Settings → Pages → Source: "GitHub Actions" for the docs site.
+4. **Ruff re-wrapped 26 files** (about 1,000 lines, formatting only). Two rules are ignored on purpose
+   (line length; `zip()` without `strict=`), with reasons in pyproject.toml.
+5. **Not tested inside Claude Desktop** (not installed here); the server was checked over real stdio with
+   the MCP SDK's own client, on live SEC data.
+6. **Material for MkDocs** announces end of life on 2027-05-05; its successor (Zensical) reads the same
+   `mkdocs.yml`.
+
+**Suggested for `LEARNING.md`:** *API* (a set of functions other code can call), *DataFrame*, *PyPI*,
+*trusted publishing*, *linter / formatter*, *pre-commit hook*, *MCP* (a standard way for AI assistants
+to call tools), *stdio*.
+
+---
+
 ## Summary of session 10 (2026-11-14)
 
 **Built:** all 3 queue tasks, each on its own branch and pull request, stacked in this order (#76 on
@@ -1824,3 +1859,27 @@ Same rules and format as session 2.
   also called the XBRL data "the same filings their auditors sign off on": the statements are audited,
   the XBRL tagging isn't, so it now says the data is filed alongside the annual report. "Only the share
   price comes from elsewhere" became "share price and exchange rates", which is accurate.
+
+## S11 Task 6 — MCP server
+
+- **2026-11-18 · decision:** the official `mcp` SDK as an optional extra (`datadough[mcp]`), so the app
+  and library don't install it. It's version 2.3, where `FastMCP` became `MCPServer`; the code was
+  written against the installed API (checked by inspecting it), not from memory of v1.
+- **2026-11-18 · tools (`src/finance_analyzer/mcp_server.py`, command `datadough-mcp`, stdio):**
+  `search_companies`, `company_summary` (identity, latest year's headline figures and key ratios, each
+  with its filing), `company_metrics` (every ratio and red-flag score for one year, with formula, inputs,
+  reason and source URLs). All three are built on the Python API from task 1, return structured JSON,
+  and carry `ToolAnnotations(read_only_hint=True, destructive_hint=False, idempotent_hint=True,
+  open_world_hint=True)`. **"Read-only"** means nothing outside the machine changes; like the app, it keeps
+  a local cache in `./data`, which docs/mcp.md says.
+- **2026-11-18 · errors:** an unknown ticker, a fund, a missing year, no `SEC_USER_AGENT` or an unreachable
+  SEC come back as `ToolError` messages the assistant can pass on, not crashes.
+- **2026-11-18 · found while checking:** over the real stdio protocol, the two tools annotated `-> dict`
+  returned only text, no structured content; the SDK treats `dict[str, Any]` as structured. Fixed, and the
+  protocol test now checks structured content for `company_summary` too.
+- **2026-11-18 · checked:** 6 offline tests (tools listed and read-only, each tool's output, errors, a call
+  through the protocol). CI now runs `pytest --all-extras` so they run there; without the extra they're
+  skipped (304 passed, 1 skipped). Live stdio check with the SDK's own client: tools listed, KO's summary
+  with filing dates, ratios equal to the app's (ROE 45.97%, net margin 27.34%), "NOPE" → a readable
+  error. **Not checked:** inside Claude Desktop itself (not installed here); docs/mcp.md gives the config.
+- **2026-11-18 · scope:** SPEC.md lists the MCP server (beyond the written v1 screens), like the API.
