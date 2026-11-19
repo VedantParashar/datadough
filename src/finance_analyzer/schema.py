@@ -74,8 +74,11 @@ ITEMS = {
         # at Realty Income and Public Storage; most other companies have no such line.
         LineItem(
             "gain_on_sale_of_real_estate",
-            ("GainsLossesOnSalesOfInvestmentRealEstate", "GainLossOnSaleOfProperties",
-             "GainLossOnSaleOfRealEstateInvestmentProperty"),
+            (
+                "GainsLossesOnSalesOfInvestmentRealEstate",
+                "GainLossOnSaleOfProperties",
+                "GainLossOnSaleOfRealEstateInvestmentProperty",
+            ),
             "USD",
             "flow",
         ),
@@ -191,9 +194,7 @@ ITEMS = {
 
 # Not one of the standard items: the balance sheet's bottom line, used to derive
 # liabilities for companies that don't report them and to balance-check those companies.
-LIABILITIES_AND_EQUITY = LineItem(
-    "liabilities_and_equity", ("LiabilitiesAndStockholdersEquity",), "USD", "instant"
-)
+LIABILITIES_AND_EQUITY = LineItem("liabilities_and_equity", ("LiabilitiesAndStockholdersEquity",), "USD", "instant")
 
 # The two parts that add up to temporary equity.
 TEMPORARY_EQUITY_PARTS = (
@@ -213,7 +214,9 @@ TEMPORARY_EQUITY_PARTS = (
 
 # Selling/marketing and administrative costs, added up when no SG&A total is reported.
 SGA_PARTS = (
-    LineItem("selling and marketing", ("SellingAndMarketingExpense", "MarketingExpense", "SellingExpense"), "USD", "flow"),
+    LineItem(
+        "selling and marketing", ("SellingAndMarketingExpense", "MarketingExpense", "SellingExpense"), "USD", "flow"
+    ),
     LineItem("general and administrative", ("GeneralAndAdministrativeExpense",), "USD", "flow"),
 )
 

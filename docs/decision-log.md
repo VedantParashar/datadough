@@ -1792,3 +1792,24 @@ Same rules and format as session 2.
   Source: "GitHub Actions" once; the README links to https://vedantparashar.github.io/finance-analyzer/,
   which works after the first deploy. `site/` is git-ignored.
 - **2026-11-18 · checked:** built and served locally, Methodology viewed in dark mode, no console errors.
+
+## S11 Task 4 — Ruff lint and format
+
+- **2026-11-18 · rules:** Ruff 0.17.5 (dev dependency) with the defaults plus `I` (import order), `UP`
+  (modern syntax) and `B` (likely bugs), line length 120 (the code's existing width). First run: 131
+  findings. **Ignored, with the reason in pyproject.toml:** E501 line length (83; the formatter wraps
+  code, the rest are long strings and table text) and B905 `zip()` without `strict=` (19; truncation is
+  intended, e.g. four page columns zipped with fewer cards, and `strict=True` would *change* behaviour by
+  raising).
+- **2026-11-18 · fixed without changing behaviour:**
+  - **B023 (8), closures over loop variables:** none was a live bug (each lambda ran at once, inside its
+    loop step), but the code no longer relies on that: the metrics engine binds them with
+    `functools.partial`, and the share-count check became a small `_gives_eps()` helper.
+  - **E731 (12), lambdas assigned to names:** turned into `def`s (11 in tests, 1 in parse.py).
+  - **B017:** a test that accepted any exception now expects `duckdb.ConstraintException`, the error the
+    NULL value actually raises (confirmed by the test passing).
+  - **I001/UP (9):** import order and modern syntax, auto-fixed.
+  - `ruff format`: 26 files re-wrapped (about 1,000 lines). 304 tests pass before and after.
+- **2026-11-18 · wiring:** a `lint` job in CI (`ruff check`, `ruff format --check`),
+  `.pre-commit-config.yaml` (ruff-pre-commit `v0.17.5`, tag confirmed to exist; `uvx pre-commit run
+  --all-files` passes), the Ruff badge in the README, and CONTRIBUTING.md's steps.

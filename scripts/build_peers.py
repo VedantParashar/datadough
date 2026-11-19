@@ -73,7 +73,9 @@ def revenues(client: httpx.Client, year: int) -> dict[int, float]:
         # A few filers tag the same revenue twice, once a thousand or a million times too large
         # (Tigo Energy, FY2025: $103.5M also filed as $103.5bn). Believe the smaller figure.
         others = [values[cik] for values in by_tag if cik in values]
-        found[cik] = next((o for o in others for scale in (1e3, 1e6) if math.isclose(o * scale, value, rel_tol=0.001)), value)
+        found[cik] = next(
+            (o for o in others for scale in (1e3, 1e6) if math.isclose(o * scale, value, rel_tol=0.001)), value
+        )
     return found
 
 

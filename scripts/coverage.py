@@ -70,28 +70,33 @@ def check(ticker: str) -> dict:
     recent = years[-RECENT_YEARS:]
     have = {(row.item, row.fiscal_year_end) for row in rows}
     checks = parse.balance_checks(edgar.fetch_company_facts(ticker))
-    latest = {name: metric for name, metric in metrics[years[-1]].items() if name in FORMULAS}  # not the red-flag scores
+    latest = {
+        name: metric for name, metric in metrics[years[-1]].items() if name in FORMULAS
+    }  # not the red-flag scores
     flags = {name: metrics[years[-1]][name] for name in RED_FLAG_FORMULAS}
     return {
         "currency": display.currency(rows),
         "years": f"{display.fiscal_year(years[0])}–{display.fiscal_year(years[-1])}",
         "missing_items": [
-            item for item in ITEMS
-            if item not in NOT_EXPECTED and not any((item, end) in have for end in recent)
+            item for item in ITEMS if item not in NOT_EXPECTED and not any((item, end) in have for end in recent)
         ],
         "partial_items": [
-            item for item in ITEMS
+            item
+            for item in ITEMS
             if item not in NOT_EXPECTED and 0 < sum((item, end) in have for end in recent) < len(recent)
         ],
         "metrics_ok": sum(metric.value is not None for metric in latest.values()),
         "metrics_missing": [display.LABELS[name] for name, metric in latest.items() if metric.value is None],
         "balance_failures": [
             f"{display.fiscal_year(date.fromisoformat(c.fiscal_year_end))} ({display.money(c.difference, display.currency(rows))})"
-            for c in checks if not c.passed
+            for c in checks
+            if not c.passed
         ],
         "year_gaps": len(display.missing_years(years)),
         "flags_ok": [name for name, metric in flags.items() if metric.value is not None],
-        "flags_missing": [f"{display.LABELS[name]} ({metric.reason})" for name, metric in flags.items() if metric.value is None],
+        "flags_missing": [
+            f"{display.LABELS[name]} ({metric.reason})" for name, metric in flags.items() if metric.value is None
+        ],
     }
 
 
@@ -108,8 +113,11 @@ def main() -> None:
         f"- **All 19 metrics for the latest year:** {sum(r['metrics_ok'] == 19 for r in loaded.values())} companies.",
         f"- **Every stored year balances:** {sum(not r['balance_failures'] for r in loaded.values())} of {len(loaded)}.",
         "- **Red-flag scores for the latest year:** "
-        + ", ".join(f"{display.LABELS[name]} {sum(name in r['flags_ok'] for r in loaded.values())} of {len(loaded)}"
-                    for name in RED_FLAG_FORMULAS) + ".",
+        + ", ".join(
+            f"{display.LABELS[name]} {sum(name in r['flags_ok'] for r in loaded.values())} of {len(loaded)}"
+            for name in RED_FLAG_FORMULAS
+        )
+        + ".",
         "",
         "How to read it: *Missing items* were not found in any of the last five fiscal years; *partly missing*",
         "in some of them. Temporary equity and gains on sale of real estate are left out (most companies have none).",
@@ -121,16 +129,27 @@ def main() -> None:
     ]
     lines += [FINDINGS]
     for group, tickers in GROUPS.items():
-        lines += [f"## {group}", "", "| Ticker | Currency | Years | Metrics | Red flags | Missing items | Partly missing | Metrics unavailable | Red flags unavailable | Balance failures |", "|---|---|---|---|---|---|---|---|---|---|"]
+        lines += [
+            f"## {group}",
+            "",
+            "| Ticker | Currency | Years | Metrics | Red flags | Missing items | Partly missing | Metrics unavailable | Red flags unavailable | Balance failures |",
+            "|---|---|---|---|---|---|---|---|---|---|",
+        ]
         for ticker in tickers:
             r = results[ticker]
             if "error" in r:
                 lines.append(f"| {ticker} | | | **failed** | | {r['error']} | | | | |")
                 continue
             cells = [
-                ticker, r["currency"], r["years"], f"{r['metrics_ok']} of 19", f"{len(r['flags_ok'])} of 4",
-                ", ".join(r["missing_items"]) or "none", ", ".join(r["partial_items"]) or "none",
-                ", ".join(r["metrics_missing"]) or "none", ", ".join(r["flags_missing"]) or "none",
+                ticker,
+                r["currency"],
+                r["years"],
+                f"{r['metrics_ok']} of 19",
+                f"{len(r['flags_ok'])} of 4",
+                ", ".join(r["missing_items"]) or "none",
+                ", ".join(r["partial_items"]) or "none",
+                ", ".join(r["metrics_missing"]) or "none",
+                ", ".join(r["flags_missing"]) or "none",
                 ", ".join(r["balance_failures"]) or "none",
             ]
             lines.append("| " + " | ".join(cells) + " |")

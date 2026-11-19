@@ -11,8 +11,15 @@ MUTED = "#64748B"
 LAYOUT = {
     "font": {"family": "Inter, system-ui, sans-serif", "size": 13},
     # Title pinned to the top edge and the legend just above the plot, so they never overlap on a phone.
-    "title": {"x": 0, "xanchor": "left", "yref": "container", "y": 1, "yanchor": "top", "pad": {"t": 8},
-              "font": {"size": 15, "weight": 600}},
+    "title": {
+        "x": 0,
+        "xanchor": "left",
+        "yref": "container",
+        "y": 1,
+        "yanchor": "top",
+        "pad": {"t": 8},
+        "font": {"size": 15, "weight": 600},
+    },
     "colorway": SERIES,
     "paper_bgcolor": "rgba(0,0,0,0)",
     "plot_bgcolor": "rgba(0,0,0,0)",
@@ -32,7 +39,11 @@ def style(figure: go.Figure, tickformat: str = "", title: str | None = None) -> 
     figure.update_xaxes(showgrid=False, tickfont_color=MUTED, title_font_color=MUTED)
     figure.update_yaxes(
         # ".1~%": one decimal only where needed (40%, 2.5%), so a narrow range never repeats a label.
-        gridcolor=GRID, zeroline=False, tickformat=".1~%" if tickformat.endswith("%") else tickformat, hoverformat=".1%" if tickformat.endswith("%") else tickformat,  # axis 20%, hover 24.3%
-        tickfont_color=MUTED, title_font_color=MUTED,
+        gridcolor=GRID,
+        zeroline=False,
+        tickformat=".1~%" if tickformat.endswith("%") else tickformat,
+        hoverformat=".1%" if tickformat.endswith("%") else tickformat,  # axis 20%, hover 24.3%
+        tickfont_color=MUTED,
+        title_font_color=MUTED,
     )
     return figure

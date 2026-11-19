@@ -11,22 +11,28 @@ import streamlit as st
 from streamlit.proto.WidgetStates_pb2 import WidgetState
 from streamlit.testing.v1 import AppTest
 from streamlit.testing.v1.element_tree import Selectbox
+from test_metrics import AAPL, M
 
 from finance_analyzer import edgar, parse, peers, preload, prices, store
 from finance_analyzer.parse import BalanceCheck, LineItemRow
-from test_metrics import AAPL, M
 
 APP = str(Path(__file__).parents[1] / "src" / "finance_analyzer" / "app.py")
 INFO = {
     "AAPL": {"name": "Apple Inc.", "sic": 3571, "industry": "Electronic Computers"},
     "JPM": {"name": "JPMorgan Chase & Co.", "sic": 6021, "industry": "National Commercial Banks"},
-    "GS": {"name": "Goldman Sachs Group Inc", "sic": 6211, "industry": "Security Brokers, Dealers & Flotation Companies"},
+    "GS": {
+        "name": "Goldman Sachs Group Inc",
+        "sic": 6211,
+        "industry": "Security Brokers, Dealers & Flotation Companies",
+    },
     "BRK-B": {"name": "Berkshire Hathaway Inc", "sic": 6331, "industry": "Fire, Marine & Casualty Insurance"},
     "SAP": {"name": "SAP SE", "sic": 7372, "industry": "Services-Prepackaged Software"},
 }
 
 
-COMPANIES = [edgar.Company(ticker, info["name"], f"{number:010}") for number, (ticker, info) in enumerate(INFO.items(), 1)] + [
+COMPANIES = [
+    edgar.Company(ticker, info["name"], f"{number:010}") for number, (ticker, info) in enumerate(INFO.items(), 1)
+] + [
     edgar.Company("APLE", "Apple Hospitality REIT, Inc.", "0000000099"),  # so "apple" matches two names
 ]
 
@@ -51,8 +57,16 @@ def trailing_rows(ticker):
     if ticker == "SAP":
         raise parse.NoQuarterlyReports("No usable quarterly figures in the SEC's data for this company.")
     return [
-        store.StoredLineItem(ticker, item, end.replace(month=6, day=27), (value if item == "diluted_eps" else value * M) * 1.1,
-                             "USD", "accn", "", datetime(2026, 11, 12))
+        store.StoredLineItem(
+            ticker,
+            item,
+            end.replace(month=6, day=27),
+            (value if item == "diluted_eps" else value * M) * 1.1,
+            "USD",
+            "accn",
+            "",
+            datetime(2026, 11, 12),
+        )
         for end, items in AAPL.items()
         for item, value in items.items()
     ]
@@ -79,7 +93,9 @@ def offline(monkeypatch, tmp_path):
     quarter = {"2026-03-28": (100_000 * M, False), "2026-06-27": (110_000 * M, True)}
     monkeypatch.setattr(parse, "quarterly_values", lambda facts: {"revenue": quarter, "net_income": {}})
     monkeypatch.setattr(parse, "balance_checks", lambda facts: checks)
-    monkeypatch.setattr(prices, "fetch_quote", lambda ticker: prices.Quote(250.0, 3.7e12, datetime(2026, 11, 11, 15, 30)))
+    monkeypatch.setattr(
+        prices, "fetch_quote", lambda ticker: prices.Quote(250.0, 3.7e12, datetime(2026, 11, 11, 15, 30))
+    )
     monkeypatch.setattr(prices, "fetch_exchange_rate", lambda currency: prices.Rate(0.9, datetime(2026, 11, 12, 9, 0)))
     monkeypatch.setattr(edgar, "fetch_company_info", lambda ticker: INFO.get(ticker, INFO["AAPL"]))
     monkeypatch.setattr(edgar, "list_companies", lambda: COMPANIES)
@@ -171,13 +187,21 @@ def test_company_page_loads_and_shows_every_section():
     assert app.header[0].value == "Apple Inc. (AAPL)"
     assert [t.label for t in app.tabs] == ["Overview", "Financials", "Ratios", "Red flags", "Valuation", "Data checks"]
     assert [s.value for s in app.subheader] == [
-        "Key ratios vs industry", "Peers", "Metrics for FY2026", "Trends", "DuPont breakdown",
+        "Key ratios vs industry",
+        "Peers",
+        "Metrics for FY2026",
+        "Trends",
+        "DuPont breakdown",
     ]
     # the share price, four overview cards, every grouped metric card, five valuation cards, four DuPont tiles,
     # four red-flag cards
     assert len(app.metric) == 1 + 4 + 18 + 5 + 4 + 4
     cards = {m.label: m for m in app.metric}
-    assert (cards["Share price"].value, cards["Revenue"].value, cards["Revenue"].delta) == ("$250.00", "$478,834M", "+15.1%")
+    assert (cards["Share price"].value, cards["Revenue"].value, cards["Revenue"].delta) == (
+        "$250.00",
+        "$478,834M",
+        "+15.1%",
+    )
     snapshot = table(app, "Ratio")
     assert list(snapshot.columns) == ["Ratio", "FY2026", "Industry median"] and snapshot.iloc[0, 2] == "—"
     cards = {m.label: m.value for m in app.metric}
@@ -280,7 +304,10 @@ def test_peers_are_suggested_and_one_click_opens_compare():
     app = company("aapl")
     buttons = {b.label: b for b in app.button}
     assert {"SAP · $30,000M", "GS · $50,000M", "Compare AAPL with the first 2"} <= buttons.keys()
-    assert any("same SEC industry code as AAPL (3571, Electronic Computers), closest in revenue first" in c.value for c in app.caption)
+    assert any(
+        "same SEC industry code as AAPL (3571, Electronic Computers), closest in revenue first" in c.value
+        for c in app.caption
+    )
     app = buttons["SAP · $30,000M"].click().run()
     assert not app.exception and app.title[0].value == "Compare"
     assert app.multiselect[0].value == ["AAPL — Apple Inc.", "SAP — SAP SE"]
@@ -290,7 +317,9 @@ def test_peers_are_suggested_and_one_click_opens_compare():
 def test_a_company_with_no_peers_says_so():
     app = company("JPM")
     assert not app.exception
-    assert "No other company with revenue in US dollars shares JPM's SEC industry code (6021)." in [c.value for c in app.caption]
+    assert "No other company with revenue in US dollars shares JPM's SEC industry code (6021)." in [
+        c.value for c in app.caption
+    ]
 
 
 def test_company_page_still_works_when_yfinance_fails(monkeypatch):
@@ -348,7 +377,12 @@ def test_company_page_shows_the_data_checks():
     assert "⚠ **Balance check:** 1 of 4 years balance, 1 doesn't, 2 couldn't be checked." in markdown
     assert "✓ **Missing years:** none, every year from FY2023 to FY2026 is stored." in markdown
     checks = app.dataframe[-1].value
-    assert list(checks["Assets = liabilities + equity"]) == ["✓ Balances", "✗ Doesn't balance", "Not checked", "Not checked"]
+    assert list(checks["Assets = liabilities + equity"]) == [
+        "✓ Balances",
+        "✗ Doesn't balance",
+        "Not checked",
+        "Not checked",
+    ]
 
 
 @pytest.mark.parametrize("ticker", ["JPM", "GS", "BRK-B"])
@@ -393,7 +427,15 @@ def test_compare_shows_table_and_chart_for_each_company():
     table = app.dataframe[0].value
     assert list(table.columns) == ["Metric", "AAPL FY2026 (Sep 26)", "JPM FY2026 (Sep 26)"]
     assert list(table["Metric"])[-9:] == [
-        "Altman Z″", "Piotroski F", "Beneish M", "Accruals ratio", "Market cap", "P/E", "P/B", "EV / EBIT", "FCF yield",
+        "Altman Z″",
+        "Piotroski F",
+        "Beneish M",
+        "Accruals ratio",
+        "Market cap",
+        "P/E",
+        "P/B",
+        "EV / EBIT",
+        "FCF yield",
     ]
     assert table.iloc[-4, 1] == "27.99×"
     flags = table.set_index("Metric").loc[["Altman Z″", "Piotroski F", "Beneish M", "Accruals ratio"]]
@@ -504,7 +546,9 @@ def test_foreign_valuation_is_unavailable_when_the_exchange_rate_lookup_fails(mo
     cards = {m.label: m.value for m in app.metric}
     assert cards["Market cap"] == "$3,700,000M" and cards["Net margin"] == "27.6%"
     assert [cards[name] for name in ("P/E", "P/B", "EV / EBIT", "FCF yield")] == ["unavailable"] * 4
-    assert any("Exchange rate unavailable: Yahoo Finance returned no US dollar to EUR rate" in c.value for c in app.caption)
+    assert any(
+        "Exchange rate unavailable: Yahoo Finance returned no US dollar to EUR rate" in c.value for c in app.caption
+    )
     assert any("no exchange rate from US dollars to EUR" in c.value for c in app.caption)
 
 
@@ -520,7 +564,9 @@ def test_compare_notes_different_currencies():
 
 
 def test_every_figure_links_to_the_filing_it_was_read_from(monkeypatch):
-    revenue = {"units": {"USD": [{"accn": "accn", "form": "10-K", "filed": "2026-10-31", "val": 1, "end": "2026-09-26"}]}}
+    revenue = {
+        "units": {"USD": [{"accn": "accn", "form": "10-K", "filed": "2026-10-31", "val": 1, "end": "2026-09-26"}]}
+    }
     monkeypatch.setattr(edgar, "fetch_company_facts", lambda ticker: {"facts": {"us-gaap": {"Revenues": revenue}}})
     app = company("AAPL")
     url = "https://www.sec.gov/Archives/edgar/data/1/accn/accn-index.htm"  # AAPL's CIK is 1 in the test list

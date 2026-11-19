@@ -3,48 +3,100 @@
 from datetime import date
 
 import pytest
+from test_metrics import rows_from
 
 from finance_analyzer import display
 from finance_analyzer.metrics import RED_FLAG_FORMULAS, company_metrics
-from test_metrics import rows_from
 
 # Copied from the database (store.get_company), in $M; diluted shares in millions.
 AAPL = {
     date(2024, 9, 28): {
-        "revenue": 391035, "cost_of_revenue": 210352, "net_income": 93736, "current_assets": 152987,
-        "total_assets": 364980, "current_liabilities": 176392, "long_term_debt": 85750,
+        "revenue": 391035,
+        "cost_of_revenue": 210352,
+        "net_income": 93736,
+        "current_assets": 152987,
+        "total_assets": 364980,
+        "current_liabilities": 176392,
+        "long_term_debt": 85750,
     },
     date(2025, 9, 27): {
-        "revenue": 416161, "cost_of_revenue": 220960, "selling_general_admin": 27601, "net_income": 112010,
-        "diluted_shares": 15004.697, "receivables": 39777, "current_assets": 147957,
-        "property_plant_equipment": 49834, "total_assets": 359241, "current_liabilities": 165631,
-        "long_term_debt": 78328, "operating_cash_flow": 111482, "depreciation_amortization": 11698,
+        "revenue": 416161,
+        "cost_of_revenue": 220960,
+        "selling_general_admin": 27601,
+        "net_income": 112010,
+        "diluted_shares": 15004.697,
+        "receivables": 39777,
+        "current_assets": 147957,
+        "property_plant_equipment": 49834,
+        "total_assets": 359241,
+        "current_liabilities": 165631,
+        "long_term_debt": 78328,
+        "operating_cash_flow": 111482,
+        "depreciation_amortization": 11698,
     },
     date(2026, 9, 26): {
-        "revenue": 478834, "cost_of_revenue": 245232, "selling_general_admin": 29774, "operating_income": 158063,
-        "net_income": 132175, "diluted_shares": 14720.306, "receivables": 43817, "current_assets": 173857,
-        "property_plant_equipment": 52084, "total_assets": 404548, "current_liabilities": 169915,
-        "long_term_debt": 68208, "total_liabilities": 292455, "retained_earnings": 13700, "total_equity": 112093,
-        "operating_cash_flow": 145097, "depreciation_amortization": 13423,
+        "revenue": 478834,
+        "cost_of_revenue": 245232,
+        "selling_general_admin": 29774,
+        "operating_income": 158063,
+        "net_income": 132175,
+        "diluted_shares": 14720.306,
+        "receivables": 43817,
+        "current_assets": 173857,
+        "property_plant_equipment": 52084,
+        "total_assets": 404548,
+        "current_liabilities": 169915,
+        "long_term_debt": 68208,
+        "total_liabilities": 292455,
+        "retained_earnings": 13700,
+        "total_equity": 112093,
+        "operating_cash_flow": 145097,
+        "depreciation_amortization": 13423,
     },
 }
 KO = {
     date(2023, 12, 31): {
-        "revenue": 45754, "cost_of_revenue": 18520, "net_income": 10714, "current_assets": 26732,
-        "total_assets": 97703, "current_liabilities": 23571, "long_term_debt": 35547,
+        "revenue": 45754,
+        "cost_of_revenue": 18520,
+        "net_income": 10714,
+        "current_assets": 26732,
+        "total_assets": 97703,
+        "current_liabilities": 23571,
+        "long_term_debt": 35547,
     },
     date(2024, 12, 31): {
-        "revenue": 47061, "cost_of_revenue": 18324, "selling_general_admin": 14582, "net_income": 10631,
-        "diluted_shares": 4320, "receivables": 3569, "current_assets": 25997, "property_plant_equipment": 10303,
-        "total_assets": 100549, "current_liabilities": 25249, "long_term_debt": 42375,
-        "operating_cash_flow": 6805, "depreciation_amortization": 1075,
+        "revenue": 47061,
+        "cost_of_revenue": 18324,
+        "selling_general_admin": 14582,
+        "net_income": 10631,
+        "diluted_shares": 4320,
+        "receivables": 3569,
+        "current_assets": 25997,
+        "property_plant_equipment": 10303,
+        "total_assets": 100549,
+        "current_liabilities": 25249,
+        "long_term_debt": 42375,
+        "operating_cash_flow": 6805,
+        "depreciation_amortization": 1075,
     },
     date(2025, 12, 31): {
-        "revenue": 47941, "cost_of_revenue": 18397, "selling_general_admin": 14521, "operating_income": 13762,
-        "net_income": 13107, "diluted_shares": 4313, "receivables": 3038, "current_assets": 31044,
-        "property_plant_equipment": 9613, "total_assets": 104816, "current_liabilities": 21281,
-        "long_term_debt": 42119, "total_liabilities": 70541, "retained_earnings": 80382, "total_equity": 34275,
-        "operating_cash_flow": 7408, "depreciation_amortization": 1050,
+        "revenue": 47941,
+        "cost_of_revenue": 18397,
+        "selling_general_admin": 14521,
+        "operating_income": 13762,
+        "net_income": 13107,
+        "diluted_shares": 4313,
+        "receivables": 3038,
+        "current_assets": 31044,
+        "property_plant_equipment": 9613,
+        "total_assets": 104816,
+        "current_liabilities": 21281,
+        "long_term_debt": 42119,
+        "total_liabilities": 70541,
+        "retained_earnings": 80382,
+        "total_equity": 34275,
+        "operating_cash_flow": 7408,
+        "depreciation_amortization": 1050,
     },
 }
 LATEST = {"AAPL": (AAPL, date(2026, 9, 26)), "KO": (KO, date(2025, 12, 31))}
@@ -82,7 +134,11 @@ def test_altman_z_by_hand(company, expected):
 def test_piotroski_f_by_hand(company, expected, failed):
     score = scores(company)["piotroski_f"]
     assert score.value == expected and score.reason == ""
-    tests = {int(key.split(":")[0].removeprefix("test ")): value for key, value in score.inputs.items() if key.startswith("test ")}
+    tests = {
+        int(key.split(":")[0].removeprefix("test ")): value
+        for key, value in score.inputs.items()
+        if key.startswith("test ")
+    }
     assert len(tests) == 9 and [number for number, passed in tests.items() if not passed] == failed
 
 
@@ -105,8 +161,16 @@ def test_beneish_m_by_hand(company):
     expected, indexes = BENEISH[company]
     score = scores(company)["beneish_m"]
     assert score.value == pytest.approx(expected, abs=0.0001) and score.reason == ""
-    names = ["receivables index", "gross margin index", "asset quality index", "sales growth index",
-             "depreciation index", "SG&A index", "accruals to total assets", "leverage index"]
+    names = [
+        "receivables index",
+        "gross margin index",
+        "asset quality index",
+        "sales growth index",
+        "depreciation index",
+        "SG&A index",
+        "accruals to total assets",
+        "leverage index",
+    ]
     assert [score.inputs[name] for name in names] == pytest.approx(indexes, abs=0.0001)
 
 

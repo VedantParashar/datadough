@@ -79,8 +79,16 @@ def load_company(ticker: str) -> int:
         connection.executemany(
             "INSERT INTO line_items VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [
-                (ticker, r.item, r.fiscal_year_end, r.value, ITEMS[r.item].unit.replace("USD", currency), r.accn,
-                 r.derivation, loaded_at)
+                (
+                    ticker,
+                    r.item,
+                    r.fiscal_year_end,
+                    r.value,
+                    ITEMS[r.item].unit.replace("USD", currency),
+                    r.accn,
+                    r.derivation,
+                    loaded_at,
+                )
                 for r in rows
             ],
         )
@@ -101,7 +109,9 @@ def get_company(ticker: str) -> list[StoredLineItem]:
 def stored_tickers() -> list[str]:
     """Every company saved so far, in alphabetical order."""
     with _connect() as connection:
-        return [row[0] for row in connection.execute("SELECT DISTINCT ticker FROM line_items ORDER BY ticker").fetchall()]
+        return [
+            row[0] for row in connection.execute("SELECT DISTINCT ticker FROM line_items ORDER BY ticker").fetchall()
+        ]
 
 
 def trailing_twelve_months(ticker: str) -> list[StoredLineItem]:
@@ -114,7 +124,15 @@ def trailing_twelve_months(ticker: str) -> list[StoredLineItem]:
     currency = parse.reporting_currency(facts)
     now = datetime.now(UTC).replace(tzinfo=None)
     return [
-        StoredLineItem(ticker, r.item, date.fromisoformat(r.fiscal_year_end), r.value,
-                       ITEMS[r.item].unit.replace("USD", currency), r.accn, r.derivation, now)
+        StoredLineItem(
+            ticker,
+            r.item,
+            date.fromisoformat(r.fiscal_year_end),
+            r.value,
+            ITEMS[r.item].unit.replace("USD", currency),
+            r.accn,
+            r.derivation,
+            now,
+        )
         for r in parse.trailing_twelve_months(facts, company_is_financial(ticker))
     ]

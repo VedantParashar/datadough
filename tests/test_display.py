@@ -9,7 +9,10 @@ from finance_analyzer.store import StoredLineItem
 
 
 def test_every_metric_has_a_label_and_every_grouped_metric_exists():
-    assert display.LABELS.keys() == FORMULAS.keys() | RED_FLAG_FORMULAS.keys() | PRICE_FORMULAS.keys() | REIT_FORMULAS.keys()
+    assert (
+        display.LABELS.keys()
+        == FORMULAS.keys() | RED_FLAG_FORMULAS.keys() | PRICE_FORMULAS.keys() | REIT_FORMULAS.keys()
+    )
     assert set(display.REIT_METRICS) == REIT_FORMULAS.keys()
     assert set(display.RED_FLAGS) == RED_FLAG_FORMULAS.keys()
     assert set(display.PRICE_METRICS) == PRICE_FORMULAS.keys()
@@ -101,14 +104,21 @@ def test_year_end_note_names_each_year_end():
 
 
 def test_every_metric_has_learning_text():
-    assert display.LEARNING.keys() == FORMULAS.keys() | RED_FLAG_FORMULAS.keys() | PRICE_FORMULAS.keys() | REIT_FORMULAS.keys()
+    assert (
+        display.LEARNING.keys()
+        == FORMULAS.keys() | RED_FLAG_FORMULAS.keys() | PRICE_FORMULAS.keys() | REIT_FORMULAS.keys()
+    )
     for name, text in display.LEARNING.items():
         assert text.keys() == {"meaning", "good", "traps"}, name
         assert all(value.strip() for value in text.values()), name
 
 
 def balance_rows(*ends, items=("total_assets", "total_liabilities", "total_equity")):
-    return [StoredLineItem("T", item, end, 100e9, "USD", "accn", "", datetime(2026, 11, 10)) for end in ends for item in items]
+    return [
+        StoredLineItem("T", item, end, 100e9, "USD", "accn", "", datetime(2026, 11, 10))
+        for end in ends
+        for item in items
+    ]
 
 
 def test_balance_check_table_explains_each_result():
@@ -122,7 +132,10 @@ def test_balance_check_table_explains_each_result():
     table = display.balance_check_table(rows, checks)
     assert [line["Fiscal year"] for line in table] == ["FY2026", "FY2025", "FY2024", "FY2023"]  # newest first
     assert [line["Assets = liabilities + equity"] for line in table] == [
-        "✓ Balances", "✓ Balances", "✗ Doesn't balance", "Not checked",
+        "✓ Balances",
+        "✓ Balances",
+        "✗ Doesn't balance",
+        "Not checked",
     ]
     details = [line["Detail"] for line in table]
     assert details[0] == "total assets equal liabilities + temporary equity + total equity"
@@ -161,8 +174,14 @@ def test_best_worst_follows_each_metrics_direction_and_skips_what_cant_be_ranked
     assert display.best_worst("roe", {"A": 0.1, "B": None}) == (None, None)  # one value: nothing to compare
     assert display.best_worst("roe", {"A": 0.1, "B": 0.1}) == (None, None)  # a tie
     assert display.best_worst("market_cap", {"A": 1e12, "B": 2e12}) == (None, None)  # size, not quality
-    every_metric = [name for group in display.GROUPS.values() for name in group] + display.RED_FLAGS + display.PRICE_METRICS
-    assert set(every_metric) - display.HIGHER_IS_BETTER - display.LOWER_IS_BETTER == {"equity_multiplier", "market_cap", *display.RED_FLAGS}
+    every_metric = (
+        [name for group in display.GROUPS.values() for name in group] + display.RED_FLAGS + display.PRICE_METRICS
+    )
+    assert set(every_metric) - display.HIGHER_IS_BETTER - display.LOWER_IS_BETTER == {
+        "equity_multiplier",
+        "market_cap",
+        *display.RED_FLAGS,
+    }
 
 
 def test_source_column_links_the_latest_year_that_has_the_item():

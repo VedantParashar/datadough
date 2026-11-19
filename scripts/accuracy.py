@@ -58,7 +58,9 @@ def main() -> None:
             if result == "✗":
                 shown = "missing" if app is None else f"{app:,.2f}"
                 note = company["figures"][item].get("note", "")
-                misses.append(f"- **{company['ticker']} {label(item)}:** filing {filed:,} (“{line}”), app {shown}. {note}".rstrip())
+                misses.append(
+                    f"- **{company['ticker']} {label(item)}:** filing {filed:,} (“{line}”), app {shown}. {note}".rstrip()
+                )
             elif result == "n/a":
                 app_text = "not shown" if app is None else f"calculates {app:,.0f}"
                 misses.append(f"- {company['ticker']} {label(item)}: {line}; the app {app_text} (not counted).")

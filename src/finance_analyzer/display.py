@@ -62,8 +62,15 @@ GROUPS = {
 LEARNING: dict[str, dict[str, str]] = json.loads(Path(__file__).with_name("learning.json").read_text())
 
 MULTIPLES = {
-    "current_ratio", "quick_ratio", "debt_to_equity", "interest_coverage", "asset_turnover", "equity_multiplier",
-    "pe", "pb", "ev_ebit",
+    "current_ratio",
+    "quick_ratio",
+    "debt_to_equity",
+    "interest_coverage",
+    "asset_turnover",
+    "equity_multiplier",
+    "pe",
+    "pb",
+    "ev_ebit",
 }
 DOLLARS = {"free_cash_flow", "market_cap", "ffo"}  # every other metric is a fraction shown as a percentage
 
@@ -112,7 +119,13 @@ def format_metric(name: str, value: float | None, currency: str = "USD") -> str:
 def verdict(name: str, value: float) -> str:
     """What a red-flag score says, using each author's published cut-offs."""
     if name == "altman_z":
-        return "Safe zone (above 2.6)" if value > 2.6 else "Grey zone (1.1 to 2.6)" if value >= 1.1 else "Distress zone (below 1.1)"
+        return (
+            "Safe zone (above 2.6)"
+            if value > 2.6
+            else "Grey zone (1.1 to 2.6)"
+            if value >= 1.1
+            else "Distress zone (below 1.1)"
+        )
     if name == "piotroski_f":
         return "Strong (7 to 9)" if value >= 7 else "Weak (0 to 3)" if value <= 3 else "Average (4 to 6)"
     if name == "beneish_m":
@@ -314,9 +327,23 @@ def ratio_snapshot(latest: dict, medians: dict[str, tuple[float, int]], label: s
 # (size, not quality), the equity multiplier (more leverage is neither good nor bad on its own) and the
 # red-flag scores, whose own verdict says more ("worst" in red on a safe-zone score would mislead).
 HIGHER_IS_BETTER = {
-    "gross_margin", "operating_margin", "net_margin", "roe", "roa", "roic", "current_ratio", "quick_ratio",
-    "interest_coverage", "asset_turnover", "free_cash_flow", "fcf_margin", "revenue_growth", "revenue_cagr_3y",
-    "eps_growth", "eps_cagr_3y", "fcf_yield",
+    "gross_margin",
+    "operating_margin",
+    "net_margin",
+    "roe",
+    "roa",
+    "roic",
+    "current_ratio",
+    "quick_ratio",
+    "interest_coverage",
+    "asset_turnover",
+    "free_cash_flow",
+    "fcf_margin",
+    "revenue_growth",
+    "revenue_cagr_3y",
+    "eps_growth",
+    "eps_cagr_3y",
+    "fcf_yield",
 }
 LOWER_IS_BETTER = {"debt_to_equity", "pe", "pb", "ev_ebit"}
 NEGATIVE_MEANS_TROUBLE = {"debt_to_equity", "pe", "pb", "ev_ebit"}  # losses or negative equity, not "cheap"
@@ -327,7 +354,8 @@ def best_worst(name: str, values: dict[str, float | None]) -> tuple[str | None, 
     if name not in HIGHER_IS_BETTER | LOWER_IS_BETTER:
         return None, None
     ranked = {
-        key: value for key, value in values.items()
+        key: value
+        for key, value in values.items()
         if value is not None and not (name in NEGATIVE_MEANS_TROUBLE and value < 0)
     }
     if len(ranked) < 2 or len(set(ranked.values())) == 1:

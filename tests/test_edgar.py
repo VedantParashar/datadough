@@ -36,10 +36,18 @@ def test_fetch_company_facts_reads_from_cache(fake_cache):
 
 def test_fetch_company_info_reads_name_and_industry(fake_cache, tmp_path):
     (tmp_path / "submissions").mkdir()
-    submissions = {"name": "Apple Inc.", "sic": "3571", "sicDescription": "Electronic Computers", "exchanges": ["Nasdaq"]}
+    submissions = {
+        "name": "Apple Inc.",
+        "sic": "3571",
+        "sicDescription": "Electronic Computers",
+        "exchanges": ["Nasdaq"],
+    }
     (tmp_path / "submissions" / "CIK0000320193.json").write_text(json.dumps(submissions))
     assert edgar.fetch_company_info("AAPL") == {
-        "name": "Apple Inc.", "sic": 3571, "industry": "Electronic Computers", "exchange": "Nasdaq",
+        "name": "Apple Inc.",
+        "sic": 3571,
+        "industry": "Electronic Computers",
+        "exchange": "Nasdaq",
     }
     del submissions["exchanges"]  # some companies list no exchange
     (tmp_path / "submissions" / "CIK0000320193.json").write_text(json.dumps(submissions))
@@ -84,7 +92,9 @@ def sec(monkeypatch):
             if self.fail:
                 raise httpx.ConnectError("no connection")
             tickers = '{"0": {"cik_str": 320193, "ticker": "AAPL", "title": "Apple Inc."}}'
-            return httpx.Response(200, text=tickers if "tickers" in url else '{"entityName": "new"}', request=httpx.Request("GET", url))
+            return httpx.Response(
+                200, text=tickers if "tickers" in url else '{"entityName": "new"}', request=httpx.Request("GET", url)
+            )
 
     fake = FakeSEC()
     fake.calls = []
@@ -142,8 +152,17 @@ def listed(monkeypatch):
 
 @pytest.mark.parametrize(
     "typed, ticker",
-    [("BRK-B", "BRK-B"), ("brk.b", "BRK-B"), (" brk b ", "BRK-B"), ("BRK/B", "BRK-B"), ("brkb", "BRK-B"),
-     ("sho.pri", "SHO.PRI"), ("sho-pri", "SHO.PRI"), ("f", "F"), ("ford", "FORD")],
+    [
+        ("BRK-B", "BRK-B"),
+        ("brk.b", "BRK-B"),
+        (" brk b ", "BRK-B"),
+        ("BRK/B", "BRK-B"),
+        ("brkb", "BRK-B"),
+        ("sho.pri", "SHO.PRI"),
+        ("sho-pri", "SHO.PRI"),
+        ("f", "F"),
+        ("ford", "FORD"),
+    ],
 )
 def test_find_ticker_accepts_any_separator(listed, typed, ticker):
     assert edgar.find_ticker(typed).ticker == ticker
@@ -168,9 +187,14 @@ def test_fund_without_statements_gets_a_clear_error(fake_cache, tmp_path, monkey
     """The SEC answers 404 for filers with no financial data, such as SPY."""
     (tmp_path / "companyfacts" / "CIK0000320193.json").unlink()
     monkeypatch.setenv("SEC_USER_AGENT", "Test test@example.com")
-    not_found = lambda url, **kwargs: httpx.Response(404, request=httpx.Request("GET", url))
+
+    def not_found(url, **kwargs):
+        return httpx.Response(404, request=httpx.Request("GET", url))
+
     monkeypatch.setattr(edgar.httpx, "get", not_found)
-    with pytest.raises(edgar.NoFinancialStatements, match="AAPL is listed with the SEC but has no financial statements"):
+    with pytest.raises(
+        edgar.NoFinancialStatements, match="AAPL is listed with the SEC but has no financial statements"
+    ):
         edgar.fetch_company_facts("aapl")
 
 

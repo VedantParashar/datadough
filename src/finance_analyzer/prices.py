@@ -48,7 +48,9 @@ def fetch_exchange_rate(currency: str) -> Rate:
     try:
         rate = yf.Ticker(f"{currency}=X").fast_info["lastPrice"]
     except Exception as error:  # an unknown currency raises KeyError; the rest as in fetch_quote
-        raise PriceUnavailable(f"Yahoo Finance didn't return a US dollar to {currency} rate ({type(error).__name__})") from error
+        raise PriceUnavailable(
+            f"Yahoo Finance didn't return a US dollar to {currency} rate ({type(error).__name__})"
+        ) from error
     if not rate or rate <= 0:
         raise PriceUnavailable(f"Yahoo Finance returned no US dollar to {currency} rate")
     return Rate(float(rate), datetime.now(UTC))

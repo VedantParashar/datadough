@@ -38,8 +38,10 @@ def _formulas(cell) -> dict[str, str]:
         return f"(({cell(item)}+{cell(item, 1)})/2)"
 
     def invested(back):
-        return (f"({cell('short_term_debt', back)}+{cell('long_term_debt', back)}+{cell('total_equity', back)}"
-                f"-{cell('cash', back)}-{cell('short_term_investments', back)})")
+        return (
+            f"({cell('short_term_debt', back)}+{cell('long_term_debt', back)}+{cell('total_equity', back)}"
+            f"-{cell('cash', back)}-{cell('short_term_investments', back)})"
+        )
 
     def growth(item):
         return f"{cell(item)}/{cell(item, 1)}-1"
@@ -118,6 +120,7 @@ def company_workbook(
         unit = f" (in {display.symbol(currency)}M)" if name in display.DOLLARS else ""
         sheet.append([display.LABELS[name], FORMULA_TEXT[name] + unit])
     for column, end in enumerate(years, FIRST_YEAR_COLUMN):
+
         def cell(item, years_back=0, column=column):
             if column - years_back < FIRST_YEAR_COLUMN:
                 return "#REF!"  # no such year: the engine says n/a here, so this formula is never written

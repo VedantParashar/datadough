@@ -28,6 +28,7 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "pytest>=9.2.0",
+    "ruff>=0.17.5",
 ]
 docs = [
     "mkdocs-material>=9.8.1",
@@ -36,3 +37,15 @@ docs = [
 [tool.uv.build-backend]
 # Published as "datadough", imported as finance_analyzer (the module's name since the start).
 module-name = "finance_analyzer"
+
+[tool.ruff]
+line-length = 120
+extend-exclude = ["data", "site"]
+
+[tool.ruff.lint]
+# Errors, import order, modern syntax, likely bugs (bugbear).
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+    "E501",  # the formatter wraps code; what's left is long strings and table text
+    "B905",  # zip() truncating is intended here (e.g. four page columns zipped with fewer cards)
+]

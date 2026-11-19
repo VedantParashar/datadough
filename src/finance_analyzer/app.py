@@ -15,7 +15,14 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from finance_analyzer import charts, display, edgar, export, parse, peers, preload, prices, store
-from finance_analyzer.metrics import FORMULA_TEXT, MIN_FOR_MEDIAN, Metric, company_metrics, industry_medians, price_metrics
+from finance_analyzer.metrics import (
+    FORMULA_TEXT,
+    MIN_FOR_MEDIAN,
+    Metric,
+    company_metrics,
+    industry_medians,
+    price_metrics,
+)
 
 YEARS_SHOWN = 5
 ANNUAL, TTM = "Fiscal years", "Trailing 12 months"
@@ -30,6 +37,8 @@ def use_secret_user_agent() -> None:
         return
     if user_agent:
         os.environ["SEC_USER_AGENT"] = user_agent  # edgar.py reads it from here and stays free of Streamlit
+
+
 def feedback_url() -> str | None:
     """FEEDBACK_URL from Streamlit secrets or the environment; None (no link shown) if unset or not https."""
     try:
@@ -237,7 +246,9 @@ def bank_banner(ticker: str, info: dict) -> None:
 
 
 def refresh_button(ticker: str) -> None:
-    if st.button("Refresh", icon=":material/refresh:", help="Download this company's filings from the SEC again and reload it."):
+    if st.button(
+        "Refresh", icon=":material/refresh:", help="Download this company's filings from the SEC again and reload it."
+    ):
         try:
             edgar.refresh(ticker)
         except (httpx.HTTPError, RuntimeError) as error:
@@ -248,8 +259,14 @@ def refresh_button(ticker: str) -> None:
 
 
 def metric_card(
-    name: str, metric: Metric, prior: Metric | None, currency: str, benchmark: tuple[float, int] | None = None,
-    history: list[float | None] | None = None, links: dict[str, tuple[str, str]] | None = None, period: str = "",
+    name: str,
+    metric: Metric,
+    prior: Metric | None,
+    currency: str,
+    benchmark: tuple[float, int] | None = None,
+    history: list[float | None] | None = None,
+    links: dict[str, tuple[str, str]] | None = None,
+    period: str = "",
 ) -> None:
     with st.container(border=True, height="stretch"):  # cards in a row share the tallest one's height
         st.metric(
@@ -279,7 +296,9 @@ def metric_card(
             learn(name)
             ticker = st.query_params.get("ticker", "")  # the company page keeps it in the address
             value = display.format_metric(name, metric.value, currency)
-            st.markdown(f"[:material/flag: Report a wrong number]({display.report_url(ticker, display.LABELS[name], value, period)})")
+            st.markdown(
+                f"[:material/flag: Report a wrong number]({display.report_url(ticker, display.LABELS[name], value, period)})"
+            )
 
 
 def financial_table(table: list[dict[str, str]], unit: str | None = None) -> None:
@@ -361,7 +380,11 @@ def company_page() -> None:
 
     annual_rows, quarters = rows, None
     period = st.segmented_control(
-        "Period", [ANNUAL, TTM], default=ANNUAL, required=True, key="period",
+        "Period",
+        [ANNUAL, TTM],
+        default=ANNUAL,
+        required=True,
+        key="period",
         help="Trailing 12 months (TTM) adds up the last four quarters, so it includes results reported since "
         "the last annual report.",
     )
@@ -445,12 +468,23 @@ def price_tile(ticker: str) -> None:
 
 
 def overview_tab(
-    ticker: str, info: dict, rows: list[store.StoredLineItem], metrics: dict, years: list, labels: list[str],
-    currency: str, medians: dict, links: dict[str, tuple[str, str]],
+    ticker: str,
+    info: dict,
+    rows: list[store.StoredLineItem],
+    metrics: dict,
+    years: list,
+    labels: list[str],
+    currency: str,
+    medians: dict,
+    links: dict[str, tuple[str, str]],
 ) -> None:
     st.caption(
         f"The headline numbers for {labels[-1]}"
-        + (f", with the change from {labels[-2]} and the last {len(years)} years as a sparkline." if len(labels) > 1 else ".")
+        + (
+            f", with the change from {labels[-2]} and the last {len(years)} years as a sparkline."
+            if len(labels) > 1
+            else "."
+        )
     )
     by_key = {(row.item, row.fiscal_year_end): row.value for row in rows}
     latest, prior = metrics[years[-1]], metrics[years[-2]] if len(years) > 1 else {}
@@ -466,8 +500,16 @@ def overview_tab(
             )
     for column, name in zip(kpis[2:], ["operating_margin", "free_cash_flow"]):
         with column:
-            metric_card(name, latest[name], prior.get(name), currency, medians.get(name),
-                        [metrics[end][name].value for end in years], links, labels[-1])
+            metric_card(
+                name,
+                latest[name],
+                prior.get(name),
+                currency,
+                medians.get(name),
+                [metrics[end][name].value for end in years],
+                links,
+                labels[-1],
+            )
 
     chart, snapshot = st.columns([3, 2])
     by_million = {key: value / 1e6 for key, value in by_key.items()}
@@ -475,8 +517,10 @@ def overview_tab(
         trend_chart(
             f"Revenue and net income ({display.symbol(currency)}M)",
             labels,
-            {label: [by_million.get((item, end)) for end in years] for label, item in
-             [("Revenue", "revenue"), ("Net income", "net_income")]},
+            {
+                label: [by_million.get((item, end)) for end in years]
+                for label, item in [("Revenue", "revenue"), ("Net income", "net_income")]
+            },
             "bar",
             "$,.0f" if currency == "USD" else ",.0f",
         )
@@ -490,7 +534,11 @@ def overview_tab(
 
 
 def financials_tab(
-    rows: list[store.StoredLineItem], years: list, name_period, quarters: dict | None, currency: str,
+    rows: list[store.StoredLineItem],
+    years: list,
+    name_period,
+    quarters: dict | None,
+    currency: str,
     links: dict[str, tuple[str, str]],
 ) -> None:
     st.caption(
@@ -514,8 +562,15 @@ def financials_tab(
 
 
 def ratios_tab(
-    info: dict, rows: list[store.StoredLineItem], metrics: dict, years: list, labels: list[str], currency: str,
-    in_industry: list[str], medians: dict, links: dict[str, tuple[str, str]],
+    info: dict,
+    rows: list[store.StoredLineItem],
+    metrics: dict,
+    years: list,
+    labels: list[str],
+    currency: str,
+    in_industry: list[str],
+    medians: dict,
+    links: dict[str, tuple[str, str]],
 ) -> None:
     st.subheader(f"Metrics for {labels[-1]}")
     st.caption(f"Changes are against {labels[-2]}." if len(labels) > 1 else "No prior year stored.")
@@ -535,8 +590,16 @@ def ratios_tab(
         st.markdown(f"**{group}**")
         for column, name in zip(st.columns(4), names):
             with column:
-                metric_card(name, latest[name], prior.get(name), currency, medians.get(name),
-                            [metrics[end][name].value for end in years], links, labels[-1])
+                metric_card(
+                    name,
+                    latest[name],
+                    prior.get(name),
+                    currency,
+                    medians.get(name),
+                    [metrics[end][name].value for end in years],
+                    links,
+                    labels[-1],
+                )
 
     if info["sic"] == REIT_SIC:
         st.markdown("**Real estate (REIT)**")
@@ -546,8 +609,16 @@ def ratios_tab(
         )
         for column, name in zip(st.columns(4), display.REIT_METRICS):
             with column:
-                metric_card(name, latest[name], prior.get(name), currency, None,
-                            [metrics[end][name].value for end in years], links, labels[-1])
+                metric_card(
+                    name,
+                    latest[name],
+                    prior.get(name),
+                    currency,
+                    None,
+                    [metrics[end][name].value for end in years],
+                    links,
+                    labels[-1],
+                )
 
     st.subheader("Trends")
     left, right = st.columns(2)
@@ -555,7 +626,10 @@ def ratios_tab(
         trend_chart(
             "Margins",
             labels,
-            {display.LABELS[name]: [metrics[end][name].value for end in years] for name in display.GROUPS["Profitability"]},
+            {
+                display.LABELS[name]: [metrics[end][name].value for end in years]
+                for name in display.GROUPS["Profitability"]
+            },
             "line",
             ".0%",
         )
@@ -567,18 +641,25 @@ def ratios_tab(
 
 
 def valuation_tab(
-    ticker: str, rows: list[store.StoredLineItem], labels: list[str], currency: str, twelve_months: bool,
+    ticker: str,
+    rows: list[store.StoredLineItem],
+    labels: list[str],
+    currency: str,
+    twelve_months: bool,
     links: dict[str, tuple[str, str]],
 ) -> None:
     valuation_metrics, price_note = valuation(ticker, rows)
     st.caption(
-        f"{price_note} Profit, equity, debt and cash flow are for the {labels[-1]}." if twelve_months else
-        f"{price_note} Profit, equity, debt and cash flow are from {labels[-1]}, the last full fiscal year, so "
+        f"{price_note} Profit, equity, debt and cash flow are for the {labels[-1]}."
+        if twelve_months
+        else f"{price_note} Profit, equity, debt and cash flow are from {labels[-1]}, the last full fiscal year, so "
         "these differ from sites that use the last twelve months."
     )
     for column, name in zip(st.columns(5), display.PRICE_METRICS):
         with column:
-            metric_card(name, valuation_metrics[name], None, currency, links=links, period=f"{labels[-1]}, today's price")
+            metric_card(
+                name, valuation_metrics[name], None, currency, links=links, period=f"{labels[-1]}, today's price"
+            )
 
 
 def open_company(text: str) -> None:
@@ -611,7 +692,8 @@ def peers_section(ticker: str, info: dict) -> None:
         company = edgar.find_ticker(peer.ticker)
         note = "" if peer.same_code else f" Wider industry group ({info['sic'] // 10}x), not the same code."
         if column.button(
-            f"{peer.ticker} · {display.money(peer.revenue)}", key=f"peer-{peer.ticker}",
+            f"{peer.ticker} · {display.money(peer.revenue)}",
+            key=f"peer-{peer.ticker}",
             help=f"{company.name if company else peer.ticker}.{note}",
         ):
             open_compare([ticker, peer.ticker])
@@ -634,7 +716,7 @@ def data_checks_section(ticker: str, rows: list[store.StoredLineItem]) -> None:
     unchecked = len(table) - balanced - failed
     st.markdown(
         f"{'⚠' if failed else '✓'} **Balance check:** {balanced} of {len(table)} years balance, {failed} "
-        f"{'doesn\'t' if failed == 1 else 'don\'t'}, {unchecked} couldn't be checked."
+        f"{"doesn't" if failed == 1 else "don't"}, {unchecked} couldn't be checked."
     )
     with st.expander("Balance check by year", expanded=bool(failed)):
         st.dataframe(table, hide_index=True)
@@ -647,7 +729,12 @@ def data_checks_section(ticker: str, rows: list[store.StoredLineItem]) -> None:
 
 
 def red_flags_section(
-    metrics: dict, years: list, labels: list[str], currency: str, info: dict, medians: dict,
+    metrics: dict,
+    years: list,
+    labels: list[str],
+    currency: str,
+    info: dict,
+    medians: dict,
     links: dict[str, tuple[str, str]],
 ) -> None:
     st.caption(
@@ -656,11 +743,21 @@ def red_flags_section(
         "“Common traps” in each card)."
     )
     if edgar.is_financial(info["sic"]):
-        st.caption("These scores were built for industrial and commercial companies and don't apply to banks, brokers or insurers.")
+        st.caption(
+            "These scores were built for industrial and commercial companies and don't apply to banks, brokers or insurers."
+        )
     for column, name in zip(st.columns(4), display.RED_FLAGS):
         with column:
-            metric_card(name, metrics[years[-1]][name], None, currency, medians.get(name),
-                        [metrics[end][name].value for end in years], links, labels[-1])
+            metric_card(
+                name,
+                metrics[years[-1]][name],
+                None,
+                currency,
+                medians.get(name),
+                [metrics[end][name].value for end in years],
+                links,
+                labels[-1],
+            )
     table = []
     for name in display.RED_FLAGS:
         line = {"Score": display.LABELS[name]}
@@ -693,8 +790,15 @@ def dupont_section(metrics: dict, years: list, labels: list[str]) -> None:
             metric = metrics[end]["dupont"]
             line[label] = text.format(metric.inputs[key]) if metric.value is not None else "—"
         table.append(line)
-    table.append({"Factor": "ROE", **{label: display.format_metric("dupont", metrics[end]["dupont"].value)
-                                      for label, end in zip(labels, years)}})
+    table.append(
+        {
+            "Factor": "ROE",
+            **{
+                label: display.format_metric("dupont", metrics[end]["dupont"].value)
+                for label, end in zip(labels, years)
+            },
+        }
+    )
     financial_table(table)
 
 
@@ -777,7 +881,9 @@ def compare_page() -> None:
                 missing.append(f"{display.LABELS[name]}, {ticker}: {metric.reason}")
         table.append(line)
         comparable = not (mixed and name in display.DOLLARS)  # amounts in different currencies
-        best, worst = display.best_worst(name, {t: latest[t][name].value for t in companies}) if comparable else (None, None)
+        best, worst = (
+            display.best_worst(name, {t: latest[t][name].value for t in companies}) if comparable else (None, None)
+        )
         marks.append({columns[best]: "best", columns[worst]: "worst"} if best else {})
     compare_table(table, marks, {columns[ticker]: colour for ticker, colour in colours.items()})
     st.caption(
@@ -791,10 +897,16 @@ def compare_page() -> None:
             st.markdown("\n".join(f"- {line}" for line in missing))
 
     st.subheader("Over time")
-    group = st.segmented_control("Group", list(display.GROUPS), default="Profitability", required=True, key="chart_group")
+    group = st.segmented_control(
+        "Group", list(display.GROUPS), default="Profitability", required=True, key="chart_group"
+    )
     name = st.pills(
-        "Metric", display.GROUPS[group], default=display.GROUPS[group][0], required=True,
-        format_func=display.LABELS.get, key=f"chart_metric_{group}",
+        "Metric",
+        display.GROUPS[group],
+        default=display.GROUPS[group][0],
+        required=True,
+        format_func=display.LABELS.get,
+        key=f"chart_metric_{group}",
     )
     scale = 1e6 if name in display.DOLLARS else 1  # free cash flow in millions
     figure = go.Figure()
@@ -802,7 +914,10 @@ def compare_page() -> None:
         years = sorted(metrics)[-YEARS_SHOWN:]
         values = [metrics[end][name].value for end in years]
         figure.add_scatter(
-            name=ticker, x=years, y=[None if v is None else v / scale for v in values], mode="lines+markers",
+            name=ticker,
+            x=years,
+            y=[None if v is None else v / scale for v in values],
+            mode="lines+markers",
             line_color=colours[ticker],
         )
     charts.style(figure, ".2f" if name in display.MULTIPLES else ",.0f" if name in display.DOLLARS else ".0%")
@@ -810,8 +925,10 @@ def compare_page() -> None:
     figure.update_layout(height=380, xaxis_title="Fiscal year end")
     figure.update_yaxes(
         title=(
-            None if name not in display.DOLLARS
-            else "millions, each in its own currency" if mixed
+            None
+            if name not in display.DOLLARS
+            else "millions, each in its own currency"
+            if mixed
             else f"{display.symbol(next(iter(currencies.values())))}M"
         ),
     )
@@ -840,7 +957,8 @@ def compare_table(table: list[dict[str, str]], marks: list[dict[str, str]], colo
             + {"best": "color: #22A55A; font-weight: 600", "worst": "color: #EF4444; font-weight: 600"}.get(
                 marks[row.name].get(column), ""
             )
-            if column in colours else ""
+            if column in colours
+            else ""
             for column in frame.columns
         ]
 
@@ -875,21 +993,37 @@ def home_page() -> None:
         open_company(choice or option(edgar.find_ticker(picked)))
 
     tiles = [
-        ("Analyse", ":material/query_stats:", "Statements and 18 metrics over five years, by fiscal year or the "
-         "last twelve months, with the industry median next to each.", "Analyse Apple",
-         lambda: open_company(option(edgar.find_ticker("AAPL")))),
-        ("Compare", ":material/compare_arrows:", "Put 2 to 4 companies side by side: ratios, red-flag scores and "
-         "valuation, best and worst marked.", "Compare AAPL, MSFT, NVDA",
-         lambda: open_compare(["AAPL", "MSFT", "NVDA"])),
-        ("Learn", ":material/school:", "Every number shows its formula filled in with the company's own figures, "
-         "what it means, what's good and the common traps.", "Learn with Coca-Cola",
-         lambda: open_company(option(edgar.find_ticker("KO")) if edgar.find_ticker("KO") else "KO")),
+        (
+            "Analyse",
+            ":material/query_stats:",
+            "Statements and 18 metrics over five years, by fiscal year or the "
+            "last twelve months, with the industry median next to each.",
+            "Analyse Apple",
+            lambda: open_company(option(edgar.find_ticker("AAPL"))),
+        ),
+        (
+            "Compare",
+            ":material/compare_arrows:",
+            "Put 2 to 4 companies side by side: ratios, red-flag scores and valuation, best and worst marked.",
+            "Compare AAPL, MSFT, NVDA",
+            lambda: open_compare(["AAPL", "MSFT", "NVDA"]),
+        ),
+        (
+            "Learn",
+            ":material/school:",
+            "Every number shows its formula filled in with the company's own figures, "
+            "what it means, what's good and the common traps.",
+            "Learn with Coca-Cola",
+            lambda: open_company(option(edgar.find_ticker("KO")) if edgar.find_ticker("KO") else "KO"),
+        ),
     ]
     for column, (title, icon, text, action, go_to) in zip(st.columns(3), tiles):
         with column.container(border=True, height="stretch"):
             st.markdown(f"#### {icon} {title}")
             st.markdown(text)
-            if st.button(action, key=f"tile-{title}", type="tertiary", icon=":material/arrow_forward:", icon_position="right"):
+            if st.button(
+                action, key=f"tile-{title}", type="tertiary", icon=":material/arrow_forward:", icon_position="right"
+            ):
                 go_to()
 
 

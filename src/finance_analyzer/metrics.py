@@ -6,6 +6,7 @@ Ratios are fractions (0.276 = 27.6%), interest coverage is a multiple, free cash
 
 from collections.abc import Callable, Iterable
 from datetime import date
+from functools import partial
 from statistics import median
 from typing import NamedTuple
 
@@ -13,7 +14,11 @@ from finance_analyzer.store import StoredLineItem
 
 # Absent can mean "the company has none" for these, but only if it never reports them.
 ZERO_IF_NEVER_REPORTED = {
-    "inventory", "short_term_debt", "long_term_debt", "short_term_investments", "gain_on_sale_of_real_estate",
+    "inventory",
+    "short_term_debt",
+    "long_term_debt",
+    "short_term_investments",
+    "gain_on_sale_of_real_estate",
 }
 UNUSUAL_TAX_RATE = 0.5  # above this (or below zero), ROIC is still calculated but flagged
 
@@ -184,7 +189,9 @@ def _altman_z(m: _Inputs) -> float:
         "working capital ÷ total assets": (m.get("current_assets") - m.get("current_liabilities")) / assets,
         "retained earnings ÷ total assets": m.get("retained_earnings") / assets,
         "operating income ÷ total assets": m.get("operating_income") / assets,
-        "total equity ÷ total liabilities": _divide(m.get("total_equity"), m.get("total_liabilities"), "total liabilities"),
+        "total equity ÷ total liabilities": _divide(
+            m.get("total_equity"), m.get("total_liabilities"), "total liabilities"
+        ),
     }
     m.used.update(parts)
     return sum(weight * part for weight, part in zip((6.56, 3.26, 6.72, 1.05), parts.values()))
@@ -249,7 +256,9 @@ def _beneish_m(m: _Inputs) -> float:
         return debt / _positive(m.get("total_assets", back), "total assets")
 
     indexes = {
-        "receivables index": ratio("prior-year receivables", per_revenue("receivables", 0), per_revenue("receivables", 1)),
+        "receivables index": ratio(
+            "prior-year receivables", per_revenue("receivables", 0), per_revenue("receivables", 1)
+        ),
         "gross margin index": ratio("gross margin", gross_margin(1), gross_margin(0)),
         "asset quality index": ratio("prior-year other assets", soft_assets(0), soft_assets(1)),
         "sales growth index": ratio("prior-year revenue", m.get("revenue"), m.get("revenue", 1)),
@@ -292,6 +301,7 @@ PRICE_FORMULAS: dict[str, Callable[[_Inputs, float], float]] = {
     "ev_ebit": lambda m, cap: _divide(_enterprise_value(m, cap), m.get("operating_income"), "operating income"),
     "fcf_yield": lambda m, cap: _free_cash_flow(m) / cap,
 }
+
 
 def _ffo(m: _Inputs) -> float:
     # shortcut: adds back all depreciation and amortization, as tagged; NAREIT's definition adds back only the
@@ -356,7 +366,7 @@ def company_metrics(rows: Iterable[StoredLineItem]) -> dict[date, dict[str, Metr
         results[end] = {}
         for name, formula in (FORMULAS | RED_FLAG_FORMULAS | REIT_FORMULAS).items():
             inputs = _Inputs(by_key, reported, years, end)
-            results[end][name] = _run(lambda: formula(inputs), inputs)
+            results[end][name] = _run(partial(formula, inputs), inputs)
     return results
 
 
@@ -398,7 +408,7 @@ def price_metrics(
             cap = market_cap * per_dollar
             inputs.used.update({"market cap in US dollars": market_cap, f"{currency} per US dollar": per_dollar})
             inputs.used["market cap"] = cap
-        results[name] = _run(lambda: formula(inputs, cap), inputs)
+        results[name] = _run(partial(formula, inputs, cap), inputs)
     return results
 
 
