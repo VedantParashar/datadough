@@ -2,7 +2,7 @@ from datetime import date, datetime
 
 import pytest
 
-from finance_analyzer.metrics import (
+from datadough.metrics import (
     FORMULA_TEXT,
     FORMULAS,
     PRICE_FORMULAS,
@@ -11,7 +11,7 @@ from finance_analyzer.metrics import (
     company_metrics,
     price_metrics,
 )
-from finance_analyzer.store import StoredLineItem
+from datadough.store import StoredLineItem
 
 M = 1_000_000  # fixtures are in $M, stored values are in dollars
 
@@ -323,7 +323,7 @@ def test_a_rate_is_ignored_when_the_statements_are_in_dollars():
 
 
 def test_industry_medians_need_three_companies_and_skip_amounts():
-    from finance_analyzer.metrics import Metric, industry_medians
+    from datadough.metrics import Metric, industry_medians
 
     def company(roe, margin=None, cash=5.0):
         return {

@@ -13,10 +13,10 @@ from streamlit.testing.v1 import AppTest
 from streamlit.testing.v1.element_tree import Selectbox
 from test_metrics import AAPL, M
 
-from finance_analyzer import edgar, parse, peers, preload, prices, store
-from finance_analyzer.parse import BalanceCheck, LineItemRow
+from datadough import edgar, parse, peers, preload, prices, store
+from datadough.parse import BalanceCheck, LineItemRow
 
-APP = str(Path(__file__).parents[1] / "src" / "finance_analyzer" / "app.py")
+APP = str(Path(__file__).parents[1] / "src" / "datadough" / "app.py")
 INFO = {
     "AAPL": {"name": "Apple Inc.", "sic": 3571, "industry": "Electronic Computers"},
     "JPM": {"name": "JPMorgan Chase & Co.", "sic": 6021, "industry": "National Commercial Banks"},
@@ -398,7 +398,7 @@ def test_unknown_ticker_shows_an_error():
 
 
 def compare_script():
-    from finance_analyzer.app import compare_page
+    from datadough.app import compare_page
 
     compare_page()
 
@@ -465,7 +465,7 @@ SHORT_TICKERS = [  # largest first, like the SEC's list; every one- or two-lette
 
 @pytest.mark.parametrize("typed", [c.ticker for c in SHORT_TICKERS] + ["f", "ma", "t", "m"])
 def test_compare_box_offers_the_exact_ticker_first(typed):
-    from finance_analyzer.app import exact_ticker_first
+    from datadough.app import exact_ticker_first
 
     options = exact_ticker_first(SHORT_TICKERS)
     # What the browser does with filter_mode="prefix": Enter picks the first entry starting with the typed text.
@@ -474,7 +474,7 @@ def test_compare_box_offers_the_exact_ticker_first(typed):
 
 
 def test_compare_box_still_suggests_companies_by_name():
-    from finance_analyzer.app import exact_ticker_first
+    from datadough.app import exact_ticker_first
 
     options = exact_ticker_first(SHORT_TICKERS)
     first = next(text for text in options if text.lower().startswith("ford"))

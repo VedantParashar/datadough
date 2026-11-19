@@ -1,8 +1,8 @@
 import pytest
 
-from finance_analyzer import parse
-from finance_analyzer.parse import _annual_values, _line_items, annual_line_items, annual_revenue, balance_checks
-from finance_analyzer.schema import ITEMS
+from datadough import parse
+from datadough.parse import _annual_values, _line_items, annual_line_items, annual_revenue, balance_checks
+from datadough.schema import ITEMS
 
 YEAR_END = "2018-09-29"
 FILED = "2018-11-05"
@@ -87,7 +87,7 @@ def test_total_and_shareholders_equity_use_different_tags():
 
 
 def line_items(monkeypatch, facts):
-    monkeypatch.setattr("finance_analyzer.parse.fetch_company_facts", lambda ticker: facts)
+    monkeypatch.setattr("datadough.parse.fetch_company_facts", lambda ticker: facts)
     return annual_line_items("TEST")
 
 
@@ -512,7 +512,7 @@ def test_missing_tags_give_empty_list():
 
 
 def test_fund_with_no_statement_data_is_reported_as_such(monkeypatch):
-    monkeypatch.setattr("finance_analyzer.parse.fetch_company_facts", lambda ticker: {"facts": {"dei": {"x": {}}}})
+    monkeypatch.setattr("datadough.parse.fetch_company_facts", lambda ticker: {"facts": {"dei": {"x": {}}}})
     with pytest.raises(parse.NoFinancialStatements, match="SPY files with the SEC but reports no financial statements"):
         annual_line_items("spy")
 
@@ -538,7 +538,7 @@ def test_company_with_no_annual_report_is_reported_as_such(monkeypatch):
             }
         }
     }
-    monkeypatch.setattr("finance_analyzer.parse.fetch_company_facts", lambda ticker: quarterly_only)
+    monkeypatch.setattr("datadough.parse.fetch_company_facts", lambda ticker: quarterly_only)
     with pytest.raises(parse.NoAnnualReports, match=r"NEWCO has no annual report \(10-K, 20-F or 40-F\)"):
         annual_line_items("newco")
 
@@ -615,7 +615,7 @@ def test_ifrs_short_term_debt_is_built_from_its_parts():
 
 
 def test_every_schema_item_has_an_ifrs_tag_list():
-    from finance_analyzer.schema import IFRS_TAGS
+    from datadough.schema import IFRS_TAGS
 
     assert ITEMS.keys() <= IFRS_TAGS.keys()
     assert [item for item in ITEMS if not IFRS_TAGS[item]] == ["temporary_equity"]  # no IFRS equivalent

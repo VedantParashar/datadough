@@ -7,6 +7,11 @@ What each version added, newest first. Dates are year-month-day.
 ### Changed
 - **[docs/design-decisions.md](docs/design-decisions.md)** replaces the decision log, which is no longer
   in the repository. It covers the ten decisions that shape the numbers most.
+- **The Python package is now `datadough`** (`import datadough`; the commands are `datadough` and
+  `datadough-mcp`). `import finance_analyzer` and the `finance-analyzer` command still work, and the old
+  import warns that it's deprecated.
+- Links point to the repository's new name, github.com/VedantParashar/datadough, and the docs site
+  to vedantparashar.github.io/datadough.
 
 ## 1.4.0 — 2026-11-14
 
@@ -41,7 +46,7 @@ written down, and three kinds of wrong figures are fixed.
 
 ### Known limits
 - Chevron's revenue now includes $4,599M of other income in FY2025, because its total-revenues tag does
-  ([#75](https://github.com/VedantParashar/finance-analyzer/issues/75)); documented in METHODOLOGY.md and
+  ([#75](https://github.com/VedantParashar/datadough/issues/75)); documented in METHODOLOGY.md and
   ACCURACY.md.
 - Companies already saved in a local database keep their old figures until they're reloaded (Refresh,
   or the 7-day refresh). The hosted app starts empty after a restart.
@@ -134,7 +139,7 @@ Search that picks the right company, valuation ratios for foreign companies, and
 - **Compare page search:** typing a ticker and pressing Enter now always picks that ticker. Before,
   "F" or "MA" could pick a larger company that merely contained those letters.
   The trade-off: on this page a company name is suggested from its first word only ("Coca", not "Cola").
-- **TSMC's debt** ([#26](https://github.com/VedantParashar/finance-analyzer/issues/26)): its bonds are
+- **TSMC's debt** ([#26](https://github.com/VedantParashar/datadough/issues/26)): its bonds are
   now counted, so debt/equity for FY2024 reads 0.24× instead of 0.02×. For companies reporting under
   IFRS, bonds are added when they are reported apart from borrowings; no other tested company changed.
 
@@ -144,12 +149,12 @@ Search that picks the right company, valuation ratios for foreign companies, and
 
 ### Known limits
 - TSMC's latest year is FY2024: the SEC's data feed has no statements from its FY2025 report
-  ([#37](https://github.com/VedantParashar/finance-analyzer/issues/37)), so its valuation ratios look
+  ([#37](https://github.com/VedantParashar/datadough/issues/37)), so its valuation ratios look
   high.
 - Toyota has no FCF yield, gross margin or free cash flow
-  ([#27](https://github.com/VedantParashar/finance-analyzer/issues/27)).
+  ([#27](https://github.com/VedantParashar/datadough/issues/27)).
 - Open data issues from the 30-company stress test:
-  [#29](https://github.com/VedantParashar/finance-analyzer/issues/29)–[#33](https://github.com/VedantParashar/finance-analyzer/issues/33).
+  [#29](https://github.com/VedantParashar/datadough/issues/29)–[#33](https://github.com/VedantParashar/datadough/issues/33).
 
 ## 1.0.0 — 2026-11-12
 
@@ -207,10 +212,10 @@ Live at https://datadough.streamlit.app.
 ### Known limits
 - No ETFs or funds, no quarterly data, and no valuation ratios for companies that don't report in
   US dollars.
-- Open data issues: [#1](https://github.com/VedantParashar/finance-analyzer/issues/1),
-  [#2](https://github.com/VedantParashar/finance-analyzer/issues/2),
-  [#5](https://github.com/VedantParashar/finance-analyzer/issues/5),
-  [#6](https://github.com/VedantParashar/finance-analyzer/issues/6),
-  [#26](https://github.com/VedantParashar/finance-analyzer/issues/26),
-  [#27](https://github.com/VedantParashar/finance-analyzer/issues/27) and
-  [#29](https://github.com/VedantParashar/finance-analyzer/issues/29)–[#33](https://github.com/VedantParashar/finance-analyzer/issues/33).
+- Open data issues: [#1](https://github.com/VedantParashar/datadough/issues/1),
+  [#2](https://github.com/VedantParashar/datadough/issues/2),
+  [#5](https://github.com/VedantParashar/datadough/issues/5),
+  [#6](https://github.com/VedantParashar/datadough/issues/6),
+  [#26](https://github.com/VedantParashar/datadough/issues/26),
+  [#27](https://github.com/VedantParashar/datadough/issues/27) and
+  [#29](https://github.com/VedantParashar/datadough/issues/29)–[#33](https://github.com/VedantParashar/datadough/issues/33).

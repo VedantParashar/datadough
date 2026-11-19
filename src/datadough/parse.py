@@ -6,8 +6,8 @@ from collections.abc import Iterator
 from datetime import date, timedelta
 from typing import NamedTuple
 
-from finance_analyzer.edgar import NoFinancialStatements, fetch_company_facts
-from finance_analyzer.schema import (
+from datadough.edgar import NoFinancialStatements, fetch_company_facts
+from datadough.schema import (
     CASH_LAST_RESORT,
     CURRENT_BONDS,
     CURRENT_MATURITIES_OF_LONG_TERM_DEBT,

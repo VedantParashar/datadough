@@ -12,15 +12,15 @@ from openpyxl.comments import Comment
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 
-from finance_analyzer import display
-from finance_analyzer.metrics import FORMULA_TEXT, ZERO_IF_NEVER_REPORTED, Metric
-from finance_analyzer.schema import ITEMS
-from finance_analyzer.store import StoredLineItem
+from datadough import display
+from datadough.metrics import FORMULA_TEXT, ZERO_IF_NEVER_REPORTED, Metric
+from datadough.schema import ITEMS
+from datadough.store import StoredLineItem
 
 LINE_ITEMS = "Line items"
 FIRST_YEAR_COLUMN = 3  # A = name, B = unit or formula text, C onwards = one column per fiscal year
 UNITS = {"USD": ("$M", 1e6, "#,##0"), "USD/shares": ("$ per share", 1, "0.00"), "shares": ("M shares", 1e6, "#,##0")}
-AUTHOR = "Finance Analyzer"
+AUTHOR = "Datadough"
 # Nine pass/fail tests and eight indexes: as Excel formulas they'd be unreadable, so these are written as
 # values, with every input the engine used in the cell's comment.
 RED_FLAG_VALUES = {"piotroski_f", "beneish_m"}

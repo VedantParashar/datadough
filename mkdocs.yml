@@ -1,9 +1,9 @@
 # The documentation site: uv run --group docs mkdocs serve  (published by .github/workflows/docs.yml)
 site_name: Datadough
 site_description: Company financials from SEC filings, with every number traceable to its filing
-site_url: https://vedantparashar.github.io/finance-analyzer/
-repo_url: https://github.com/VedantParashar/finance-analyzer
-repo_name: VedantParashar/finance-analyzer
+site_url: https://vedantparashar.github.io/datadough/
+repo_url: https://github.com/VedantParashar/datadough
+repo_name: VedantParashar/datadough
 edit_uri: edit/master/docs/
 
 docs_dir: docs

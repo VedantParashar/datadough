@@ -10,7 +10,7 @@ an actual deployment needs your login. If a step fails, see "If something goes w
 
 | File | Why |
 |---|---|
-| `streamlit_app.py` | The file Community Cloud runs. It starts the same app as `uv run finance-analyzer`. |
+| `streamlit_app.py` | The file Community Cloud runs. It starts the same app as `uv run datadough`. |
 | `uv.lock` | The dependency file. Community Cloud looks for `uv.lock` first and installs exactly those versions. No `requirements.txt` is needed, and adding one would be ignored. |
 | `.streamlit/config.toml` | Streamlit settings, read from the repo root. |
 | `app.py` reads `SEC_USER_AGENT` from Streamlit secrets | Hosted apps have no `.env` file; secrets replace it. Locally, `.env` still works. |
@@ -19,20 +19,20 @@ an actual deployment needs your login. If a step fails, see "If something goes w
 
 1. **Merge the pull requests into `master`** and check the tests are green on GitHub.
 2. Go to **https://share.streamlit.io** and sign in with your GitHub account. Allow it to see the
-   `finance-analyzer` repository when asked.
+   `datadough` repository when asked.
 3. Click **Create app** (top right). When asked "Do you already have an app?", choose
    **Yup, I have an app**.
 4. Fill in:
-   - **Repository:** `VedantParashar/finance-analyzer`
+   - **Repository:** `VedantParashar/datadough`
    - **Branch:** `master`
    - **Main file path:** `streamlit_app.py`
-   - **App URL** (optional): pick a short name, e.g. `finance-analyzer`
+   - **App URL** (optional): pick a short name, e.g. `datadough`
 5. Click **Advanced settings**:
    - **Python version:** `3.12`
    - **Secrets:** paste this one line, with your own name and email (the SEC asks every client to say
      who it is; it is the same value as in your `.env`):
      ```toml
-     SEC_USER_AGENT = "Finance Analyzer you@example.com"
+     SEC_USER_AGENT = "Your Name you@example.com"
      ```
      Optionally add `FEEDBACK_URL = "https://…"` (a form or page for feedback, https only) to show a
      "Feedback" link in the company header and the footer.
@@ -48,7 +48,7 @@ then **Settings → Secrets**.
 ## Things that behave differently when hosted
 
 - **30 companies are loaded in the background at startup.** `streamlit_app.py` starts a pre-load of the
-  stress-test companies (see `src/finance_analyzer/preload.py`) the first time anyone opens the app after
+  stress-test companies (see `src/datadough/preload.py`) the first time anyone opens the app after
   a restart. Pages don't wait for it; its result is one "Pre-load:" line in the app's log.
 - **Stored data is temporary.** The SEC downloads and the DuckDB file live on the app's own disk, which
   is wiped when the app restarts or goes to sleep. Nothing is lost: a company is simply downloaded again
@@ -73,5 +73,5 @@ then **Settings → Secrets**.
   ```
   That stops tracking `uv.lock` in git, which the tests on GitHub and the Dockerfile need, so only do
   this on a separate deployment branch and point the app's **Branch** at it.
-- **`ModuleNotFoundError: finance_analyzer`:** the Main file path is wrong. It must be
-  `streamlit_app.py`, not `src/finance_analyzer/app.py`.
+- **`ModuleNotFoundError: datadough`:** the Main file path is wrong. It must be
+  `streamlit_app.py`, not `src/datadough/app.py`.

@@ -2,10 +2,10 @@ from datetime import date, datetime
 
 import pytest
 
-from finance_analyzer import display
-from finance_analyzer.metrics import FORMULAS, PRICE_FORMULAS, RED_FLAG_FORMULAS, REIT_FORMULAS
-from finance_analyzer.parse import BalanceCheck
-from finance_analyzer.store import StoredLineItem
+from datadough import display
+from datadough.metrics import FORMULAS, PRICE_FORMULAS, RED_FLAG_FORMULAS, REIT_FORMULAS
+from datadough.parse import BalanceCheck
+from datadough.store import StoredLineItem
 
 
 def test_every_metric_has_a_label_and_every_grouped_metric_exists():
@@ -199,7 +199,7 @@ def test_report_url_opens_a_prefilled_github_issue():
     from urllib.parse import parse_qs, urlparse
 
     url = display.report_url("AAPL", "ROE", "142.3%", "FY2026")
-    assert url.startswith("https://github.com/VedantParashar/finance-analyzer/issues/new?")
+    assert url.startswith("https://github.com/VedantParashar/datadough/issues/new?")
     query = parse_qs(urlparse(url).query)
     assert query["title"] == ["Wrong number? AAPL ROE FY2026"] and query["labels"] == ["data-quality"]
     assert "**The app shows:** 142.3%" in query["body"][0]

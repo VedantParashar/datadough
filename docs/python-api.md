@@ -7,11 +7,11 @@ as [pandas](https://pandas.pydata.org/) DataFrames, with the SEC filing behind e
 
 ```bash
 pip install datadough          # once it's published on PyPI (see PUBLISHING.md)
-pip install git+https://github.com/VedantParashar/finance-analyzer.git   # works today
+pip install git+https://github.com/VedantParashar/datadough.git   # works today
 ```
 
-The package installs as `datadough` and is imported as `finance_analyzer` (the name the code has always
-had). Python 3.12 or newer.
+Install `datadough`, then `import datadough`. Python 3.12 or newer. (The old import name,
+`finance_analyzer`, still works for now but warns that it's deprecated.)
 
 The SEC asks every program that downloads its data to say who it is. Set your name and email first:
 
@@ -26,7 +26,7 @@ once it's 7 days old.
 ## Quick start
 
 ```python
-import finance_analyzer as dd
+import datadough as dd
 
 ko = dd.get_company("KO")
 ko.name, ko.currency, ko.fiscal_year_ends[-1]

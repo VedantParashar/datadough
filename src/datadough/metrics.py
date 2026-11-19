@@ -10,7 +10,7 @@ from functools import partial
 from statistics import median
 from typing import NamedTuple
 
-from finance_analyzer.store import StoredLineItem
+from datadough.store import StoredLineItem
 
 # Absent can mean "the company has none" for these, but only if it never reports them.
 ZERO_IF_NEVER_REPORTED = {

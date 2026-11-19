@@ -8,9 +8,9 @@ default Streamlit page. Numbers come first; decoration is close to zero. Every U
 | Piece | File |
 |---|---|
 | Colours, fonts, radius, light and dark themes | `.streamlit/config.toml` |
-| The few things the theme can't do (sticky header, card spacing, tabular figures) | `src/finance_analyzer/style.css` |
-| Chart look, shared by every chart | `src/finance_analyzer/charts.py` |
-| Number formatting | `src/finance_analyzer/display.py` |
+| The few things the theme can't do (sticky header, card spacing, tabular figures) | `src/datadough/style.css` |
+| Chart look, shared by every chart | `src/datadough/charts.py` |
+| Number formatting | `src/datadough/display.py` |
 
 Prefer a theme option or a Streamlit parameter over CSS. CSS only targets Streamlit's stable hooks:
 `st-key-<key>` classes on keyed containers and `data-testid` attributes.

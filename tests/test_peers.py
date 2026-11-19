@@ -1,6 +1,6 @@
 import pytest
 
-from finance_analyzer import peers
+from datadough import peers
 
 B = 1e9
 COMPANIES = {

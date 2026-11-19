@@ -1,26 +1,12 @@
-"""Datadough: company financials from SEC filings, every number traceable to its filing.
+"""The old name of the `datadough` package. Import `datadough` instead; this shim will be removed."""
 
-Use it as a library (see docs/python-api.md):
+import warnings
 
-    import finance_analyzer as dd
-    dd.line_items("AAPL")   # pandas DataFrame, one row per line item and year, with source columns
-    dd.metrics("AAPL")      # ratios with formula, inputs and the filings they came from
-    dd.red_flags("AAPL")    # Altman Z″, Piotroski F, Beneish M, accruals ratio, with verdicts
+from datadough import *  # noqa: F403
+from datadough import __all__  # noqa: F401
 
-or start the web app with `uv run finance-analyzer`.
-"""
-
-import sys
-from pathlib import Path
-
-from finance_analyzer.api import Company, get_company, line_items, metrics, red_flags, search
-
-__all__ = ["Company", "get_company", "line_items", "metrics", "red_flags", "search", "main"]
-
-
-def main() -> None:
-    """Start the web app: the same as `streamlit run src/finance_analyzer/app.py`."""
-    from streamlit.web import cli
-
-    sys.argv = ["streamlit", "run", str(Path(__file__).with_name("app.py")), *sys.argv[1:]]
-    sys.exit(cli.main())
+warnings.warn(
+    "finance_analyzer is now datadough: use `import datadough`. The old name will be removed in a future version.",
+    DeprecationWarning,
+    stacklevel=2,
+)

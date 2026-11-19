@@ -14,7 +14,7 @@ from typing import Any
 import httpx
 import pandas as pd
 
-from finance_analyzer import api
+from datadough import api
 
 try:
     from mcp.server.mcpserver import MCPServer

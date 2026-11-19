@@ -2,7 +2,7 @@
 
 import pytest
 
-from finance_analyzer import prices
+from datadough import prices
 
 
 def fake_yfinance(monkeypatch, fast_info):

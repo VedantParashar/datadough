@@ -5,11 +5,11 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlencode
 
-from finance_analyzer.parse import BALANCE_TOLERANCE, BalanceCheck
-from finance_analyzer.schema import ITEMS
-from finance_analyzer.store import StoredLineItem
+from datadough.parse import BALANCE_TOLERANCE, BalanceCheck
+from datadough.schema import ITEMS
+from datadough.store import StoredLineItem
 
-REPO_URL = "https://github.com/VedantParashar/finance-analyzer"
+REPO_URL = "https://github.com/VedantParashar/datadough"
 
 LABELS = {
     "gross_margin": "Gross margin",

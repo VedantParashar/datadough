@@ -5,8 +5,8 @@ from datetime import date
 import pytest
 from test_metrics import rows_from
 
-from finance_analyzer import display
-from finance_analyzer.metrics import RED_FLAG_FORMULAS, company_metrics
+from datadough import display
+from datadough.metrics import RED_FLAG_FORMULAS, company_metrics
 
 # Copied from the database (store.get_company), in $M; diluted shares in millions.
 AAPL = {

@@ -1,6 +1,6 @@
 """The Streamlit UI. It only displays what the metrics engine computes.
 
-Run from the project folder: uv run --env-file .env finance-analyzer
+Run from the project folder: uv run --env-file .env datadough
 """
 
 import html
@@ -14,8 +14,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from finance_analyzer import charts, display, edgar, export, parse, peers, preload, prices, store
-from finance_analyzer.metrics import (
+from datadough import charts, display, edgar, export, parse, peers, preload, prices, store
+from datadough.metrics import (
     FORMULA_TEXT,
     MIN_FOR_MEDIAN,
     Metric,
@@ -1033,8 +1033,8 @@ def footer() -> None:
         "Data: financial statements from [SEC EDGAR](https://www.sec.gov/edgar) (XBRL company facts, as filed); "
         "share prices and exchange rates from Yahoo Finance, through yfinance. Figures can contain errors, so check "
         "the filing before relying on one. For learning only, **not investment advice**. "
-        "[How the numbers are chosen](https://github.com/VedantParashar/finance-analyzer/blob/master/docs/METHODOLOGY.md) · "
-        "[Open source on GitHub](https://github.com/VedantParashar/finance-analyzer)"
+        "[How the numbers are chosen](https://github.com/VedantParashar/datadough/blob/master/docs/METHODOLOGY.md) · "
+        "[Open source on GitHub](https://github.com/VedantParashar/datadough)"
         + (f" · [Feedback]({feedback_url()})." if feedback_url() else ".")
     )
 

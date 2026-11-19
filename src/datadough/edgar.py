@@ -40,7 +40,7 @@ def _download(url: str, cache_path: Path) -> None:
     user_agent = os.environ.get("SEC_USER_AGENT")
     if not user_agent:
         raise RuntimeError(
-            'Set SEC_USER_AGENT, e.g. "Finance Analyzer you@example.com", in .env '
+            'Set SEC_USER_AGENT, e.g. "Your Name you@example.com", in .env '
             "and run with: uv run --env-file .env ... (on Streamlit Community Cloud: in the app's Secrets)"
         )
 

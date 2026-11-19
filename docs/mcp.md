@@ -21,10 +21,10 @@ Ratios are fractions (0.276 = 27.6%). A missing value is `null` with a `reason`;
 1. Install [uv](https://docs.astral.sh/uv/) and clone this repository:
 
    ```bash
-   git clone https://github.com/VedantParashar/finance-analyzer.git
+   git clone https://github.com/VedantParashar/datadough.git
    ```
 
-2. Find two paths: the folder you cloned into (e.g. `/Users/you/finance-analyzer`) and uv itself
+2. Find two paths: the folder you cloned into (e.g. `/Users/you/datadough`) and uv itself
    (`which uv` on macOS and Linux, `where uv` on Windows). Claude Desktop doesn't always see your
    shell's `PATH`, so the full path to uv is the safe choice.
 
@@ -37,7 +37,7 @@ Ratios are fractions (0.276 = 27.6%). A missing value is `null` with a `reason`;
      "mcpServers": {
        "datadough": {
          "command": "/Users/you/.local/bin/uv",
-         "args": ["--directory", "/Users/you/finance-analyzer", "run", "--extra", "mcp", "datadough-mcp"],
+         "args": ["--directory", "/Users/you/datadough", "run", "--extra", "mcp", "datadough-mcp"],
          "env": {"SEC_USER_AGENT": "Your Name you@example.com"}
        }
      }

@@ -21,7 +21,7 @@ TestPyPI → your account → **Publishing** → **Add a new pending publisher**
 |---|---|
 | PyPI Project Name | `datadough` |
 | Owner | `VedantParashar` |
-| Repository name | `finance-analyzer` |
+| Repository name | `datadough` |
 | Workflow name | `publish.yml` |
 | Environment name | `testpypi` |
 
@@ -48,7 +48,7 @@ to TestPyPI. Then, in a new folder:
 ```bash
 uv venv && uv pip install --index-url https://test.pypi.org/simple/ \
   --extra-index-url https://pypi.org/simple/ datadough
-SEC_USER_AGENT="Your Name you@example.com" uv run python -c "import finance_analyzer as dd; print(dd.get_company('AAPL'))"
+SEC_USER_AGENT="Your Name you@example.com" uv run python -c "import datadough as dd; print(dd.get_company('AAPL'))"
 ```
 
 (`--extra-index-url` fetches the dependencies, like pandas, from the real PyPI.)

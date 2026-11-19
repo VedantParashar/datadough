@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 import httpx
 import pytest
 
-from finance_analyzer import edgar
+from datadough import edgar
 
 
 @pytest.fixture

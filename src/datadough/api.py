@@ -5,7 +5,7 @@ and a link to it. The first call for a company downloads its filings from the SE
 `SEC_USER_AGENT` environment variable to your name and email first, as the SEC asks); later calls read
 the local cache in `./data`, refreshed by itself once it's 7 days old.
 
-    >>> import finance_analyzer as dd
+    >>> import datadough as dd
     >>> dd.get_company("AAPL").name
     'Apple Inc.'
     >>> dd.metrics("AAPL").query("metric == 'roe'")[["fiscal_year_end", "value"]].tail(1)
@@ -16,8 +16,8 @@ from datetime import date
 
 import pandas as pd
 
-from finance_analyzer import display, edgar, parse, store
-from finance_analyzer.metrics import FORMULA_TEXT, Metric, company_metrics
+from datadough import display, edgar, parse, store
+from datadough.metrics import FORMULA_TEXT, Metric, company_metrics
 
 REIT_SIC = 6798  # funds from operations (FFO) is shown only for real estate investment trusts
 
