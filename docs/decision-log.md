@@ -1771,3 +1771,24 @@ Same rules and format as session 2.
   to turn on) or `if: false` (same).
 - **2026-11-18 · checked:** the YAML parses and the jobs' conditions read as intended. Not run on GitHub
   (it can't do anything until the PyPI side exists).
+
+## S11 Task 3 — Documentation site (MkDocs Material, GitHub Pages)
+
+- **2026-11-18 · decision:** `mkdocs.yml` over the existing `docs/` folder (no copies): Home (a new
+  short `docs/index.md` with the demo), Methodology, Accuracy, Coverage, Case study, Python API.
+  Coverage wasn't in the list but Methodology and Accuracy link to it. Excluded from the site: the
+  GitHub-facing `docs/README.md` index and the long decision log. Theme: DESIGN.md's blue on slate, Inter,
+  light/dark toggle following the system.
+- **2026-11-18 · dependencies:** `mkdocs-material` in a separate `docs` dependency group, so the app and
+  the library don't install it. **Noted:** Material for MkDocs announces end of life on 2027-05-05
+  (fixes until then), with Zensical as its successor that reads the same `mkdocs.yml`; built with
+  Material as asked.
+- **2026-11-18 · fixed for the site:** ACCURACY.md linked `../scripts/accuracy_fixtures.json`, outside
+  `docs/`; the script now writes an absolute GitHub link (works on GitHub and the site), and the current
+  report got the same one-line change instead of a full rerun. The build is clean with `--strict`, which
+  the workflow uses, so a broken link fails the deploy.
+- **2026-11-18 · workflow `docs.yml`:** on pushes to master that touch `docs/` or `mkdocs.yml` (or by
+  hand): build, upload, deploy with the official Pages actions. **Owner action:** Settings → Pages →
+  Source: "GitHub Actions" once; the README links to https://vedantparashar.github.io/finance-analyzer/,
+  which works after the first deploy. `site/` is git-ignored.
+- **2026-11-18 · checked:** built and served locally, Methodology viewed in dark mode, no console errors.

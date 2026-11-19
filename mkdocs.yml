@@ -1,0 +1,53 @@
+# The documentation site: uv run --group docs mkdocs serve  (published by .github/workflows/docs.yml)
+site_name: Datadough
+site_description: Company financials from SEC filings, with every number traceable to its filing
+site_url: https://vedantparashar.github.io/finance-analyzer/
+repo_url: https://github.com/VedantParashar/finance-analyzer
+repo_name: VedantParashar/finance-analyzer
+edit_uri: edit/master/docs/
+
+docs_dir: docs
+exclude_docs: |
+  README.md
+  decision-log.md
+
+nav:
+  - Home: index.md
+  - Methodology: METHODOLOGY.md
+  - Accuracy: ACCURACY.md
+  - Coverage: COVERAGE.md
+  - Case study: case-study-apple-vs-coca-cola.md
+  - Python API: python-api.md
+
+theme:
+  name: material
+  font:
+    text: Inter
+  palette:  # DESIGN.md: one blue accent on slate/navy, light and dark
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: blue
+      toggle: {icon: material/weather-night, name: Dark theme}
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: blue
+      toggle: {icon: material/weather-sunny, name: Light theme}
+  features:
+    - navigation.instant
+    - navigation.sections
+    - content.code.copy
+    - search.highlight
+
+markdown_extensions:
+  - tables
+  - admonition
+  - toc: {permalink: true}
+  - pymdownx.superfences
+  - pymdownx.highlight
+
+validation:
+  links:
+    not_found: warn
+    absolute_links: info
