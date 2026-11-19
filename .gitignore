@@ -23,6 +23,8 @@ htmlcov/
 # Downloaded data (SEC cache, DuckDB file)
 data/
 
+# The docs site that mkdocs build makes
+site/
+
 # macOS
 .DS_Store
-site/
