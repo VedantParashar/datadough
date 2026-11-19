@@ -347,6 +347,39 @@ wheels = [
 ]
 
 [[package]]
+name = "datadough"
+version = "1.4.0"
+source = { editable = "." }
+dependencies = [
+    { name = "duckdb" },
+    { name = "httpx" },
+    { name = "openpyxl" },
+    { name = "pandas" },
+    { name = "plotly" },
+    { name = "streamlit" },
+    { name = "yfinance" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "duckdb", specifier = ">=2.0.0" },
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "pandas", specifier = ">=3.1.1" },
+    { name = "plotly", specifier = ">=7.1.0" },
+    { name = "streamlit", specifier = ">=1.67.0" },
+    { name = "yfinance", specifier = ">=1.8.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=9.2.0" }]
+
+[[package]]
 name = "duckdb"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -369,37 +402,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/d3/38/af70d7ab1ae9d4da4
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c1/8b/5fe2cc11fee489817272089c4203e679c63b570a5aaeb18d852ae3cbba6a/et_xmlfile-2.0.0-py3-none-any.whl", hash = "sha256:7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa", size = 18059, upload-time = "2024-10-25T17:25:39.051Z" },
 ]
-
-[[package]]
-name = "finance-analyzer"
-version = "1.4.0"
-source = { editable = "." }
-dependencies = [
-    { name = "duckdb" },
-    { name = "httpx" },
-    { name = "openpyxl" },
-    { name = "plotly" },
-    { name = "streamlit" },
-    { name = "yfinance" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "duckdb", specifier = ">=2.0.0" },
-    { name = "httpx", specifier = ">=0.28.1" },
-    { name = "openpyxl", specifier = ">=3.1.5" },
-    { name = "plotly", specifier = ">=7.1.0" },
-    { name = "streamlit", specifier = ">=1.67.0" },
-    { name = "yfinance", specifier = ">=1.8.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.2.0" }]
 
 [[package]]
 name = "h11"

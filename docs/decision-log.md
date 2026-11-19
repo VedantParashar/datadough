@@ -1733,3 +1733,27 @@ Same rules and format as session 2.
   "peers.json keeps the old revenue order", which task 2 fixed.
 - **2026-11-14 · version:** `pyproject.toml` 1.3.0 → 1.4.0 and `uv lock` (one line each). **Not done (not
   asked):** no git tag and no GitHub release; create release v1.4.0 after merging, as for v1.3.0.
+
+## S11 Task 1 — Python API
+
+- **2026-11-18 · base:** session 10's pull requests (#76–#78) weren't merged yet, so this session is
+  stacked on #78 (`version-1.4.0`), keeping version 1.4.0 and the rebuilt peers in the base.
+- **2026-11-18 · name:** `datadough` is free on PyPI and TestPyPI (both answer 404; checked, nothing
+  published). The distribution is now `datadough`; the import name stays `finance_analyzer`, set with
+  uv_build's `module-name`. **Why not rename the module:** every file, test, script and the Streamlit
+  entry point import `finance_analyzer`; a distribution name that differs from the import name is common
+  (beautifulsoup4 → bs4). The command stays `finance-analyzer`. The wheel builds and includes the data
+  files (learning.json, peers.json, style.css). Description set (it was "Add your description here").
+- **2026-11-18 · interface (`api.py`, re-exported from `__init__.py`):** `search`, `get_company` (a small
+  frozen dataclass), `line_items`, `metrics`, `red_flags` (DataFrames). Source columns: `accession`,
+  `form`, `filed`, `source_url` per line item; `source_urls` per metric, from the accession numbers the
+  engine already records. **Not included:** valuation ratios (they need a live share price) and the
+  compare/peers features (not asked). `pandas` is now a direct dependency (it was only there through
+  Streamlit).
+- **2026-11-18 · refactor:** "load the company if missing or older than the SEC download" moved from
+  `app.load()` into `store.current_company()`, used by both the app and the API.
+- **2026-11-18 · scope:** a Python API isn't in SPEC.md's v1 screens; SPEC.md now lists it.
+- **2026-11-18 · shortcut:** the cache lives in `./data` under the working directory, as for the app;
+  a library user running from another folder gets a second cache. Documented in docs/python-api.md.
+- **2026-11-18 · checked:** 304 tests pass (5 new, offline). On real data: KO's ROE 46.0% with its 10-K
+  link, derived liabilities with their derivation, the red-flag verdicts, `search("coca")`.

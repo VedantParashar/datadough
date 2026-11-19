@@ -3,6 +3,7 @@
 | Document | What it's for |
 |---|---|
 | [METHODOLOGY.md](METHODOLOGY.md) | How each number is chosen from the SEC data, with real examples |
+| [python-api.md](python-api.md) | Using Datadough's numbers from Python (pandas DataFrames) |
 | [ACCURACY.md](ACCURACY.md) | 95 figures from 10 companies checked against the filings themselves |
 | [COVERAGE.md](COVERAGE.md) | What's found and missing for 30 very different companies |
 | [case-study-apple-vs-coca-cola.md](case-study-apple-vs-coca-cola.md) | A short analysis made with the app's numbers |

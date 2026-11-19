@@ -44,6 +44,7 @@ Finance and business students doing case studies, stock pitches and theses.
 - Peer suggestions on the company page: 5 companies with the same SEC industry (SIC) code, closest in revenue
 - Excel export with live formulas
 - Shareable links: `?ticker=AAPL` opens a company, `?compare=AAPL,KO` a comparison
+- Python API (package `datadough`, imported as `finance_analyzer`): line items, metrics and red-flag scores as pandas DataFrames with their source filings
 
 **Data checks**
 - Assets = liabilities + equity

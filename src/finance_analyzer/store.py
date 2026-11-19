@@ -53,6 +53,16 @@ def company_is_financial(ticker: str) -> bool:
     return edgar.is_financial(edgar.fetch_company_info(ticker)["sic"])
 
 
+def current_company(ticker: str) -> list[StoredLineItem]:
+    """A company's stored rows, (re)loading it first if it isn't stored or the SEC download is newer."""
+    downloaded = edgar.facts_downloaded_at(ticker)  # downloads again by itself after 7 days
+    rows = get_company(ticker)
+    if not rows or rows[0].loaded_at < downloaded:
+        load_company(ticker)
+        rows = get_company(ticker)
+    return rows
+
+
 def load_company(ticker: str) -> int:
     """Fetch, parse and save a company, replacing its old rows. Returns the rows saved."""
     ticker = ticker.strip().upper()
