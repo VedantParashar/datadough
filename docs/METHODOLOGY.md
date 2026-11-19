@@ -17,10 +17,10 @@ IFRS (most foreign filers) have their own list under `IFRS_TAGS`.
 
 > **Example:** revenue. Many companies tag both total revenues (`Revenues`) and revenue from contracts
 > with customers (`RevenueFromContractWithCustomerExcludingAssessedTax`, from the 2018 ASC 606 standard).
-> Total revenues comes first, because the contract figure can leave revenue out: Walmart's membership
-> income ($6,750M in FY2026), most of a REIT's rent (American Tower: $10,645M total against $936M of
-> contract revenue). The cost: where a company's "total" also holds other income, that's included too
-> (Chevron's $189,031M "total revenues and other income" against $184,432M of sales). Utilities (NextEra,
+> Total revenues comes first, because the contract figure can leave revenue out. Examples: Walmart's
+> membership income ($6,750M in FY2026), or most of a REIT's rent (American Tower: $10,645M total
+> against $936M of contract revenue). The cost: when a company's "total" also holds other income, that
+> counts too (Chevron's $189,031M "total revenues and other income" against $184,432M of sales). Utilities (NextEra,
 > Duke) use `RegulatedAndUnregulatedOperatingRevenue`, further down the list.
 
 ## 2. Annual periods only
@@ -48,11 +48,11 @@ year to correct or re-present it.
 
 Per-share values and share counts from before a split are rescaled to today's share basis, so EPS growth
 compares like with like. A split is detected when a later filing reports an earlier year's EPS at a clean
-ratio of the original (any whole number, or 5-for-4 and 3-for-2; reverse splits too), **and** net income for that year is unchanged within
-1%, which rules out a restatement. Rescaled values say so: "split-adjusted ÷10".
+ratio of the original: any whole number, or 5-for-4 and 3-for-2, and reverse splits too. Net income for
+that year must also be unchanged within 1%, which rules out a restatement. Rescaled values say so: "split-adjusted ÷10".
 
 > **Example: NVIDIA.** It split 4-for-1 in 2021 and 10-for-1 in 2024. FY2022 diluted EPS was filed as
-> $3.85; the app shows $0.385 ("split-adjusted ÷10"), and years before the 2021 split are divided by 40.
+> $3.85. The app shows $0.385 ("split-adjusted ÷10"), and divides years before the 2021 split by 40.
 > Apple's FY2008 EPS change ($5.36 → $6.78, above) is *not* treated as a split: its net income moved too.
 
 ## 5. Derived items
@@ -108,13 +108,13 @@ shown with its date.
 
 ## What these rules can't catch
 
-- A value tagged with the wrong scale (thousands instead of units), except in two checked cases:
-  revenue tagged twice at a 1,000× difference (Tigo Energy), and diluted share counts filed in thousands,
-  caught because net income ÷ EPS must give the share count (NVIDIA FY2008–09, Advance Auto Parts FY2008,
-  Crocs FY2012). Other items aren't checked for this.
+- A value tagged with the wrong scale (thousands instead of units). Two cases are checked: revenue
+  tagged twice at a 1,000× difference (Tigo Energy), and diluted share counts filed in thousands. Those
+  are caught because net income ÷ EPS must give the share count (NVIDIA FY2008–09, Advance Auto Parts
+  FY2008, Crocs FY2012). Other items aren't checked for this.
 - A "total revenues" tag that also holds income that isn't revenue. Chevron tags its "Total Revenues and
-  Other Income" ($189,031M in FY2025) as total revenues, so its revenue includes $3,000M of income from
-  equity affiliates and $1,599M of other income on top of $184,432M of sales
+  Other Income" ($189,031M in FY2025) as total revenues. So its revenue includes $3,000M of income from
+  equity affiliates and $1,599M of other income, on top of $184,432M of sales
   ([#75](https://github.com/VedantParashar/finance-analyzer/issues/75)).
 - A company that uses a tag nobody else uses for a common line. Those show as "not reported" and are
   listed in [COVERAGE.md](COVERAGE.md).

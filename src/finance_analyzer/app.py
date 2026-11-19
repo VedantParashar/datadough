@@ -703,8 +703,8 @@ def peers_section(ticker: str, info: dict) -> None:
 
 def data_checks_section(ticker: str, rows: list[store.StoredLineItem]) -> None:
     st.caption(
-        "Two checks on the downloaded data, for every year stored (not just the five shown elsewhere): "
-        "does the balance sheet add up, and is any year missing? The oldest year usually can't be checked: "
+        "Two checks on the downloaded data, for every year stored (not just the five shown elsewhere). "
+        "Does the balance sheet add up, and is any year missing? The oldest year usually can't be checked: "
         "a company's first filings in this format repeat earlier income statements but not the balance sheet. "
         f"SEC data loaded {rows[0].loaded_at:%b %-d, %Y at %H:%M} UTC; it refreshes by itself once it's "
         f"{edgar.MAX_AGE.days} days old."
@@ -738,8 +738,8 @@ def red_flags_section(
     links: dict[str, tuple[str, str]],
 ) -> None:
     st.caption(
-        "Four well-known screens for financial trouble or low-quality earnings. They are prompts to read the "
-        "annual report more closely, not verdicts: each one misfires on some kinds of company (see "
+        "Four well-known screens for financial trouble or low-quality earnings. They're prompts to read the "
+        "annual report more closely, not verdicts. Each one misfires on some kinds of company (see "
         "“Common traps” in each card)."
     )
     if edgar.is_financial(info["sic"]):
@@ -851,8 +851,8 @@ def compare_page() -> None:
         each = ", ".join(f"{ticker} in {currency}" for ticker, currency in currencies.items())
         st.info(
             f"These companies report in different currencies ({each}) and their amounts aren't converted. Ratios "
-            "compare fairly, including the valuation ratios (market cap is converted at today's exchange rate); "
-            "amounts such as free cash flow don't."
+            "compare fairly, including the valuation ratios (market cap is converted at today's exchange rate). "
+            "Amounts such as free cash flow don't."
         )
     note = display.year_end_note(latest_ends)
     if note:
@@ -887,10 +887,10 @@ def compare_page() -> None:
         marks.append({columns[best]: "best", columns[worst]: "worst"} if best else {})
     compare_table(table, marks, {columns[ticker]: colour for ticker, colour in colours.items()})
     st.caption(
-        "Best and worst in each row are in green and red, where higher or lower is clearly better (market cap, "
-        "the equity multiplier and the red-flag scores aren't ranked). The four rows before the last five are red-flag scores "
-        "(prompts to look closer, not verdicts; see the company page for each one's meaning). The last five use "
-        "today's share price from Yahoo Finance; the rest come from the annual reports."
+        "Best and worst in each row are in green and red, where higher or lower is clearly better. Market cap, "
+        "the equity multiplier and the red-flag scores aren't ranked. The four rows before the last five are red-flag "
+        "scores: prompts to look closer, not verdicts (the company page explains each one). The last five use "
+        "today's share price from Yahoo Finance. The rest come from the annual reports."
     )
     if missing:
         with st.expander("Why some values are missing"):

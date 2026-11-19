@@ -12,9 +12,9 @@ $37,491M.
 
 ## 2. A split needs two signs, not one
 
-To put old per-share figures on today's share basis, I treat a change as a stock split only when a later
-filing reports an earlier year's EPS at a clean ratio (2-for-1, 10-for-1, 3-for-2…) **and** that year's
-net income is unchanged within 1%. The second test is what tells a split from a restatement. NVIDIA's
+Old per-share figures have to be put on today's share basis. I treat a change as a stock split only when
+a later filing reports an earlier year's EPS at a clean ratio (2-for-1, 10-for-1, 3-for-2…) **and** that
+year's net income is unchanged within 1%. The second test is what tells a split from a restatement. NVIDIA's
 4-for-1 (2021) and 10-for-1 (2024) splits are caught; Apple's FY2008 EPS change isn't, because its net
 income moved too.
 
@@ -34,8 +34,8 @@ failing, because a failed check is the honest result ([#3](https://github.com/Ve
 
 ## 5. Total revenues first
 
-When a company tags both total revenues and revenue from contracts with customers, I take total
-revenues, because the contract figure can leave real revenue out: Walmart's membership income, or most of
+Some companies tag both total revenues and revenue from contracts with customers. I take total revenues,
+because the contract figure can leave real revenue out: Walmart's membership income, or most of
 American Tower's rent ($10,645M total against $936M). The cost is that a "total" which also holds other
 income counts it too, as with Chevron ([#75](https://github.com/VedantParashar/finance-analyzer/issues/75)).
 
@@ -49,8 +49,8 @@ only when they're larger than the borrowings figure, since a part can't be bigge
 ## 7. Share counts filed in thousands: the EPS test
 
 Some filings give diluted shares in thousands by mistake. EPS = net income ÷ diluted shares, so the same
-year's net income and EPS say what the count must be: I multiply a count by 1,000 only when it doesn't
-reproduce the filed EPS and 1,000 times it does. That fixed NVIDIA FY2008–09, Advance Auto Parts FY2008
+year's net income and EPS say what the count must be. I multiply a count by 1,000 only when it doesn't
+give the filed EPS and 1,000 times it does. That fixed NVIDIA FY2008–09, Advance Auto Parts FY2008
 and Crocs FY2012 without guessing.
 
 ## 8. Absent is not zero

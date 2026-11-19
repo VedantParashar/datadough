@@ -1,5 +1,5 @@
 {
- "about": "Headline figures read from each company's latest annual filing as stored in the app, from the filing's own financial statements (the SEC's rendered statement pages). Amounts in millions of the stated currency as printed; diluted_eps per share. Entered by Claude, line by line; every value is waiting for the owner's check (status). null = the filing prints no such line.",
+ "about": "Headline figures read from each company's latest annual filing as stored in the app, from the filing's own financial statements (the SEC's rendered statement pages). Amounts in millions of the stated currency as printed; diluted_eps per share. Entered by Claude Code, line by line; every value is waiting for my check (status). null = the filing prints no such line.",
  "companies": [
   {
    "ticker": "AAPL",

@@ -69,8 +69,8 @@ that don't report it, and FFO for REITs.
 - **Compare page:** each company keeps one colour in its chip, its table column and its chart line; the
   best and worst value in each row are marked; the chart is picked by group and metric.
 - **Operating income where none is reported** (#29): revenue − cost of revenue − operating expenses
-  where tagged, otherwise EBIT (pretax income + interest expense), always marked as calculated and never
-  used for banks, brokers or insurers. Chevron, Occidental, Pfizer, Lilly, Shell and Canadian Natural now
+  where tagged, otherwise EBIT (pretax income + interest expense). It's always marked as calculated, and
+  never used for banks, brokers or insurers. Chevron, Occidental, Pfizer, Lilly, Shell and Canadian Natural now
   have operating margin, ROIC, interest coverage, EV/EBIT and Altman Z″.
 - **FFO (funds from operations) for REITs** (SIC 6798), with learning text and a live Excel formula, and
   a new line item for gains on sale of real estate.
