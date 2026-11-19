@@ -1,7 +1,7 @@
 # Contributing
 
 Thanks for helping. This is my student portfolio project, so I'd rather have small, clear changes than
-big clever ones. Found a wrong number? An [issue](https://github.com/VedantParashar/finance-analyzer/issues/new/choose)
+big clever ones. Found a wrong number? An [issue](https://github.com/VedantParashar/datadough/issues/new/choose)
 with the ticker and a screenshot is already a contribution.
 
 ## Setup
@@ -9,11 +9,11 @@ with the ticker and a screenshot is already a contribution.
 You need [uv](https://docs.astral.sh/uv/); it installs Python 3.12 and the packages.
 
 ```bash
-git clone https://github.com/VedantParashar/finance-analyzer.git
-cd finance-analyzer
+git clone https://github.com/VedantParashar/datadough.git
+cd datadough
 uv sync
 cp .env.example .env   # put your own name and email in SEC_USER_AGENT
-uv run --env-file .env finance-analyzer
+uv run --env-file .env datadough
 ```
 
 The app opens at http://localhost:8501. Downloaded filings and the database go in `data/` (git-ignored).

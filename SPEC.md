@@ -1,4 +1,4 @@
-# Finance Analyzer — Spec (v1)
+# Datadough — Spec (v1)
 
 ## Goal
 A free, open-source app that helps students analyse and compare public companies that file with the US SEC, and teaches what each number means.
@@ -44,7 +44,7 @@ Finance and business students doing case studies, stock pitches and theses.
 - Peer suggestions on the company page: 5 companies with the same SEC industry (SIC) code, closest in revenue
 - Excel export with live formulas
 - Shareable links: `?ticker=AAPL` opens a company, `?compare=AAPL,KO` a comparison
-- Python API (package `datadough`, imported as `finance_analyzer`): line items, metrics and red-flag scores as pandas DataFrames with their source filings
+- Python API (package and import name `datadough`): line items, metrics and red-flag scores as pandas DataFrames with their source filings
 - MCP server (stdio, read-only) for AI assistants: company search, summary and metrics with their source filings
 
 **Data checks**

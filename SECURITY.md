@@ -18,4 +18,4 @@ setting), a leak of the hosted app's secrets (`SEC_USER_AGENT`), or a vulnerable
 vulnerable way.
 
 A wrong number isn't a security issue: use "Report a wrong number" in the app or the
-[issue list](https://github.com/VedantParashar/finance-analyzer/issues).
+[issue list](https://github.com/VedantParashar/datadough/issues).

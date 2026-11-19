@@ -6,8 +6,8 @@ import pandas as pd
 import pytest
 from test_app import COMPANIES, INFO, parsed_rows
 
-import finance_analyzer as dd
-from finance_analyzer import edgar, store
+import datadough as dd
+from datadough import edgar, store
 
 URL = "https://www.sec.gov/Archives/edgar/data/1/accn/accn-index.htm"  # AAPL's CIK is 1 in the test list
 
@@ -86,3 +86,13 @@ def test_search_and_unknown_tickers():
     assert dd.search("goldman")["ticker"].tolist() == ["GS"]
     with pytest.raises(ValueError, match="No SEC-listed company has the ticker 'NOPE'"):
         dd.line_items("nope")
+
+
+def test_old_import_name_warns_and_still_works():
+    import importlib
+    import sys
+
+    sys.modules.pop("finance_analyzer", None)
+    with pytest.warns(DeprecationWarning, match="now datadough"):
+        old = importlib.import_module("finance_analyzer")
+    assert old.metrics is dd.metrics and old.main is dd.main

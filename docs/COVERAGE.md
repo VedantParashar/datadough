@@ -19,12 +19,12 @@ each one that's unavailable. Balance failures cover every stored year, with asse
 
 | Pattern | Companies | Effect | Status |
 |---|---|---|---|
-| No operating income subtotal in the income statement | CVX, OXY, PFE, LLY, SHEL, CNQ, O | operating margin, ROIC, interest coverage were unavailable | fixed by [#29](https://github.com/VedantParashar/finance-analyzer/issues/29) for all but O: EBIT (pretax income + interest) is used, marked as calculated. O tags no interest expense for FY2024–25 |
-| An older year restated in a later filing, line by line | MSFT, WMT, COST, OXY, NEE, AMT, PLOW, SONY, CRWV | that year fails the balance check | [#30](https://github.com/VedantParashar/finance-analyzer/issues/30) |
-| REITs: no current/non-current split, no cost of revenue or capex | O, PLD, AMT | liquidity ratios, gross margin, free cash flow unavailable | [#31](https://github.com/VedantParashar/finance-analyzer/issues/31); FFO is now shown for REITs instead (O and AMT have it for FY2025; PLD tags no gain on sale for FY2025, so it's unavailable) |
-| The SEC's data has only quarterly reports | XOM | can't be loaded | [#32](https://github.com/VedantParashar/finance-analyzer/issues/32) |
-| Cost of revenue and capex split over industry-specific tags | NEE, DUK, OXY, SHEL, CNQ, BABA | gross margin, free cash flow unavailable | [#33](https://github.com/VedantParashar/finance-analyzer/issues/33) |
-| An item reported in earlier years, then absent (probably "none") | GOOGL, CALM, CROX, RIVN, MRNA | quick ratio, debt/equity or ROIC unavailable | [#1](https://github.com/VedantParashar/finance-analyzer/issues/1) |
+| No operating income subtotal in the income statement | CVX, OXY, PFE, LLY, SHEL, CNQ, O | operating margin, ROIC, interest coverage were unavailable | fixed by [#29](https://github.com/VedantParashar/datadough/issues/29) for all but O: EBIT (pretax income + interest) is used, marked as calculated. O tags no interest expense for FY2024–25 |
+| An older year restated in a later filing, line by line | MSFT, WMT, COST, OXY, NEE, AMT, PLOW, SONY, CRWV | that year fails the balance check | [#30](https://github.com/VedantParashar/datadough/issues/30) |
+| REITs: no current/non-current split, no cost of revenue or capex | O, PLD, AMT | liquidity ratios, gross margin, free cash flow unavailable | [#31](https://github.com/VedantParashar/datadough/issues/31); FFO is now shown for REITs instead (O and AMT have it for FY2025; PLD tags no gain on sale for FY2025, so it's unavailable) |
+| The SEC's data has only quarterly reports | XOM | can't be loaded | [#32](https://github.com/VedantParashar/datadough/issues/32) |
+| Cost of revenue and capex split over industry-specific tags | NEE, DUK, OXY, SHEL, CNQ, BABA | gross margin, free cash flow unavailable | [#33](https://github.com/VedantParashar/datadough/issues/33) |
+| An item reported in earlier years, then absent (probably "none") | GOOGL, CALM, CROX, RIVN, MRNA | quick ratio, debt/equity or ROIC unavailable | [#1](https://github.com/VedantParashar/datadough/issues/1) |
 | No interest expense tagged | MRNA, RDDT, NEE, PLOW | interest coverage unavailable | not filed: MRNA and RDDT have little or no debt; NEE tags only the interest it paid; PLOW not investigated |
 | Losses, or fewer than four years of history | AMZN, CROX, MRNA, RDDT, CRWV, RIVN | EPS growth rates unavailable | correct: growth from a negative or missing base isn't meaningful |
 | First stored year has no balance sheet | RDDT, CRWV | "partly missing" balance sheet items | correct: a first annual report repeats older income statements only |
@@ -42,10 +42,10 @@ Every gap comes from a line item a score needs; none is a fault in a score's for
 
 | Missing input | Companies | Scores affected | Status |
 |---|---|---|---|
-| Operating income (no subtotal) | CVX, OXY, PFE, LLY, SHEL, CNQ | Altman Z″ | [#29](https://github.com/VedantParashar/finance-analyzer/issues/29) |
-| Cost of revenue | OXY, NEE, DUK, AMT, SHEL, CNQ | Piotroski F, Beneish M | [#33](https://github.com/VedantParashar/finance-analyzer/issues/33) |
-| Current assets, receivables (REITs) | O, PLD | all three except the accruals ratio | [#31](https://github.com/VedantParashar/finance-analyzer/issues/31) |
-| Long-term debt never tagged in recent years (probably "none") | CALM, O | Piotroski F, Beneish M | [#1](https://github.com/VedantParashar/finance-analyzer/issues/1) |
+| Operating income (no subtotal) | CVX, OXY, PFE, LLY, SHEL, CNQ | Altman Z″ | [#29](https://github.com/VedantParashar/datadough/issues/29) |
+| Cost of revenue | OXY, NEE, DUK, AMT, SHEL, CNQ | Piotroski F, Beneish M | [#33](https://github.com/VedantParashar/datadough/issues/33) |
+| Current assets, receivables (REITs) | O, PLD | all three except the accruals ratio | [#31](https://github.com/VedantParashar/datadough/issues/31) |
+| Long-term debt never tagged in recent years (probably "none") | CALM, O | Piotroski F, Beneish M | [#1](https://github.com/VedantParashar/datadough/issues/1) |
 | Property, plant and equipment in the latest year | NVO | Beneish M | not filed: reported in earlier years only |
 | Receivables | SONY | Beneish M | not filed: Sony tags its own receivables lines |
 | Retained earnings | BABA | Altman Z″ | not filed: no retained earnings tag in the latest year |

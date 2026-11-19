@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 
-from finance_analyzer import charts
+from datadough import charts
 
 
 def test_style_gives_every_chart_the_same_look_and_formats_hover_values():

@@ -18,9 +18,17 @@ dependencies = [
     "yfinance>=1.8.0",
 ]
 
+[project.urls]
+Homepage = "https://datadough.streamlit.app"
+Documentation = "https://vedantparashar.github.io/datadough/"
+Source = "https://github.com/VedantParashar/datadough"
+Issues = "https://github.com/VedantParashar/datadough/issues"
+Changelog = "https://github.com/VedantParashar/datadough/blob/master/CHANGELOG.md"
+
 [project.scripts]
-finance-analyzer = "finance_analyzer:main"
-datadough-mcp = "finance_analyzer.mcp_server:main"
+datadough = "datadough:main"
+finance-analyzer = "datadough:main"  # the old command name, kept so existing setups still start
+datadough-mcp = "datadough.mcp_server:main"
 
 [project.optional-dependencies]
 mcp = [
@@ -41,8 +49,8 @@ docs = [
 ]
 
 [tool.uv.build-backend]
-# Published as "datadough", imported as finance_analyzer (the module's name since the start).
-module-name = "finance_analyzer"
+# finance_analyzer is the old import name: a thin shim that warns and re-exports datadough.
+module-name = ["datadough", "finance_analyzer"]
 
 [tool.ruff]
 line-length = 120

@@ -30,14 +30,14 @@ result as calculated.
 Tesla's balance sheet doesn't add up in the data for FY2014 and FY2015, by $58M and $47M: the equity part
 of its convertible notes. The only tag holding that amount means something different at other
 companies, and adding it would have broken NVIDIA's check in 4 of its 18 years. I left the two years
-failing, because a failed check is the honest result ([#3](https://github.com/VedantParashar/finance-analyzer/issues/3)).
+failing, because a failed check is the honest result ([#3](https://github.com/VedantParashar/datadough/issues/3)).
 
 ## 5. Total revenues first
 
 Some companies tag both total revenues and revenue from contracts with customers. I take total revenues,
 because the contract figure can leave real revenue out: Walmart's membership income, or most of
 American Tower's rent ($10,645M total against $936M). The cost is that a "total" which also holds other
-income counts it too, as with Chevron ([#75](https://github.com/VedantParashar/finance-analyzer/issues/75)).
+income counts it too, as with Chevron ([#75](https://github.com/VedantParashar/datadough/issues/75)).
 
 ## 6. TSMC's bonds and Novo Nordisk's bonds
 

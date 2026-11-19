@@ -2,7 +2,7 @@ import threading
 
 import pytest
 
-from finance_analyzer import edgar, preload, store
+from datadough import edgar, preload, store
 
 
 @pytest.fixture

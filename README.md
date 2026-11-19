@@ -4,9 +4,9 @@
 
 [![Try it](https://img.shields.io/badge/Try%20it-datadough.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://datadough.streamlit.app)
 
-[![tests](https://github.com/VedantParashar/finance-analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/VedantParashar/finance-analyzer/actions/workflows/ci.yml)
-[![release](https://img.shields.io/github/v/release/VedantParashar/finance-analyzer)](https://github.com/VedantParashar/finance-analyzer/releases)
-[![license](https://img.shields.io/github/license/VedantParashar/finance-analyzer)](LICENSE)
+[![tests](https://github.com/VedantParashar/datadough/actions/workflows/ci.yml/badge.svg)](https://github.com/VedantParashar/datadough/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/VedantParashar/datadough)](https://github.com/VedantParashar/datadough/releases)
+[![license](https://img.shields.io/github/license/VedantParashar/datadough)](LICENSE)
 [![python](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
@@ -17,7 +17,7 @@ explained in plain English with the company's own numbers.
 
 ![Demo: search for AAPL, open a metric's sources, see the Source column, compare AAPL, KO and NVDA](docs/demo.gif)
 
-**Documentation:** https://vedantparashar.github.io/finance-analyzer/ (methodology, accuracy, case study,
+**Documentation:** https://vedantparashar.github.io/datadough/ (methodology, accuracy, case study,
 Python API).
 
 ## How Datadough differs
@@ -77,10 +77,10 @@ The SEC asks every program that reads its data to say who it is. Copy `.env.exam
 your name and email in `SEC_USER_AGENT`. With [uv](https://docs.astral.sh/uv/):
 
 ```bash
-git clone https://github.com/VedantParashar/finance-analyzer.git
-cd finance-analyzer
+git clone https://github.com/VedantParashar/datadough.git
+cd datadough
 cp .env.example .env   # then edit it
-uv run --env-file .env finance-analyzer
+uv run --env-file .env datadough
 ```
 
 Then open http://localhost:8501. With Docker instead: `docker compose up --build`. Tests:
@@ -92,15 +92,15 @@ Then open http://localhost:8501. With Docker instead: `docker compose up --build
   for a common line shows "—" with the reason.
 - **IFRS filers have more gaps** (Toyota has no cost of revenue or capital expenditure in the data),
   and energy companies, utilities and REITs lay out their statements differently
-  ([#27](https://github.com/VedantParashar/finance-analyzer/issues/27),
-  [#31](https://github.com/VedantParashar/finance-analyzer/issues/31),
-  [#33](https://github.com/VedantParashar/finance-analyzer/issues/33)). ExxonMobil can't be loaded
-  ([#32](https://github.com/VedantParashar/finance-analyzer/issues/32)).
+  ([#27](https://github.com/VedantParashar/datadough/issues/27),
+  [#31](https://github.com/VedantParashar/datadough/issues/31),
+  [#33](https://github.com/VedantParashar/datadough/issues/33)). ExxonMobil can't be loaded
+  ([#32](https://github.com/VedantParashar/datadough/issues/32)).
 - **Valuation mixes dates:** today's share price against the last full fiscal year, so P/E differs
   from sites that use the last twelve months. Share prices come from Yahoo Finance, which is
   unofficial; if it fails, the valuation cards read "unavailable" and the rest still works.
 - **Industry medians** use only the companies loaded into the app, so the sample is small.
-- Known data issues are in the [issue list](https://github.com/VedantParashar/finance-analyzer/issues?q=is%3Aopen+label%3Adata-quality).
+- Known data issues are in the [issue list](https://github.com/VedantParashar/datadough/issues?q=is%3Aopen+label%3Adata-quality).
 
 ## How this was built
 
@@ -112,6 +112,6 @@ code; I reviewed and tested every change. The main decisions and my reasons are 
 ## Contributing and license
 
 Wrong number? Use "Report a wrong number" in the app, or
-[open an issue](https://github.com/VedantParashar/finance-analyzer/issues/new/choose) with the ticker.
+[open an issue](https://github.com/VedantParashar/datadough/issues/new/choose) with the ticker.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup and the pull request workflow, and
 [CHANGELOG.md](CHANGELOG.md) for what each version added. [MIT](LICENSE) licensed.

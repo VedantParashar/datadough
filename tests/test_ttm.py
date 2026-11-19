@@ -2,7 +2,7 @@
 
 import pytest
 
-from finance_analyzer import parse
+from datadough import parse
 
 
 def flow(start, end, val, form="10-Q", filed=None, accn="A"):

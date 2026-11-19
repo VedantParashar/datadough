@@ -7,10 +7,10 @@ from typing import NamedTuple
 
 import duckdb
 
-from finance_analyzer import edgar, parse
-from finance_analyzer.edgar import fetch_company_facts
-from finance_analyzer.parse import annual_line_items, company_currency
-from finance_analyzer.schema import ITEMS
+from datadough import edgar, parse
+from datadough.edgar import fetch_company_facts
+from datadough.parse import annual_line_items, company_currency
+from datadough.schema import ITEMS
 
 DB_PATH = Path("data/finance.duckdb")
 _SAVING = threading.Lock()  # one save at a time: a page view and the background pre-load can overlap

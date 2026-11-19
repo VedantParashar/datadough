@@ -7,9 +7,9 @@ from test_metrics import AAPL, KO, rows_from
 from test_red_flags import AAPL as AAPL_FLAGS
 from test_red_flags import KO as KO_FLAGS
 
-from finance_analyzer.display import LABELS
-from finance_analyzer.export import company_workbook
-from finance_analyzer.metrics import company_metrics
+from datadough.display import LABELS
+from datadough.export import company_workbook
+from datadough.metrics import company_metrics
 
 
 def evaluate(book, sheet: str, formula: str) -> float:

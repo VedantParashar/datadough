@@ -7,7 +7,7 @@ reports from SEC EDGAR and puts them on one standard set of line items. Then it 
 statements, 19 ratios, red-flag scores and valuation, each explained with the company's own numbers.
 
 [Try the app](https://datadough.streamlit.app){ .md-button .md-button--primary }
-[Source on GitHub](https://github.com/VedantParashar/finance-analyzer){ .md-button }
+[Source on GitHub](https://github.com/VedantParashar/datadough){ .md-button }
 
 ![Demo: search for AAPL, open a metric's sources, see the Source column, compare AAPL, KO and NVDA](demo.gif)
 

@@ -1,4 +1,4 @@
-"""Rebuild src/finance_analyzer/peers.json: each ticker's SIC industry code and latest annual revenue.
+"""Rebuild src/datadough/peers.json: each ticker's SIC industry code and latest annual revenue.
 
 The peer suggestions on the company page read that file, so the app never downloads this itself.
 Run it about once a year, after most annual reports are in:
@@ -20,10 +20,10 @@ from pathlib import Path
 
 import httpx
 
-from finance_analyzer import edgar
-from finance_analyzer.schema import ITEMS
+from datadough import edgar
+from datadough.schema import ITEMS
 
-OUTPUT = Path(__file__).parents[1] / "src" / "finance_analyzer" / "peers.json"
+OUTPUT = Path(__file__).parents[1] / "src" / "datadough" / "peers.json"
 DATA_SETS = "https://www.sec.gov/files/dera/data/financial-statement-data-sets/{year}q{quarter}.zip"
 FRAMES = "https://data.sec.gov/api/xbrl/frames/us-gaap/{tag}/USD/CY{year}.json"
 

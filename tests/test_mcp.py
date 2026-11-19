@@ -10,7 +10,7 @@ pytest.importorskip("mcp")  # an optional extra
 from mcp.server.mcpserver.exceptions import ToolError  # noqa: E402
 from test_api import URL, offline  # noqa: E402, F401  (offline is an autouse fixture)
 
-from finance_analyzer import mcp_server  # noqa: E402
+from datadough import mcp_server  # noqa: E402
 
 
 def test_the_server_offers_three_read_only_tools():

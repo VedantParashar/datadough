@@ -6,7 +6,7 @@ periods, and the same year repeated in later filings, sometimes changed. These r
 is shown. Each has a real example, and each value on screen links to the filing it came from
 (Financials → Source, or "How it's calculated" on any metric).
 
-The code lives in `src/finance_analyzer/parse.py` (choosing and deriving line items) and
+The code lives in `src/datadough/parse.py` (choosing and deriving line items) and
 `schema.py` (which tags feed each line item).
 
 ## 1. Tag priority
@@ -115,7 +115,7 @@ shown with its date.
 - A "total revenues" tag that also holds income that isn't revenue. Chevron tags its "Total Revenues and
   Other Income" ($189,031M in FY2025) as total revenues. So its revenue includes $3,000M of income from
   equity affiliates and $1,599M of other income, on top of $184,432M of sales
-  ([#75](https://github.com/VedantParashar/finance-analyzer/issues/75)).
+  ([#75](https://github.com/VedantParashar/datadough/issues/75)).
 - A company that uses a tag nobody else uses for a common line. Those show as "not reported" and are
   listed in [COVERAGE.md](COVERAGE.md).
 - How the app's figures compare with the filings themselves is measured in [ACCURACY.md](ACCURACY.md).

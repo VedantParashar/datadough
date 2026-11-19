@@ -3,8 +3,8 @@ from datetime import date
 import duckdb
 import pytest
 
-from finance_analyzer import store
-from finance_analyzer.parse import LineItemRow
+from datadough import store
+from datadough.parse import LineItemRow
 
 YEAR_END = "2018-09-29"
 ROWS = [

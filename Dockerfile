@@ -14,4 +14,4 @@ RUN uv sync --locked --no-dev
 
 EXPOSE 8501
 # 0.0.0.0 so the app is reachable from outside the container.
-CMD ["uv", "run", "--no-sync", "finance-analyzer", "--server.address=0.0.0.0", "--server.headless=true"]
+CMD ["uv", "run", "--no-sync", "datadough", "--server.address=0.0.0.0", "--server.headless=true"]

@@ -6,7 +6,7 @@ companies of the stress test in docs/COVERAGE.md.
 
 import time
 
-from finance_analyzer import edgar, store
+from datadough import edgar, store
 
 # Chosen to differ: size, industry, accounting rules, currency, age and profitability.
 GROUPS = {

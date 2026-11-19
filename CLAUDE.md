@@ -1,4 +1,4 @@
-# Finance Analyzer
+# Datadough
 
 A financial analysis app for students. Portfolio project. Full spec to come.
 
@@ -13,6 +13,6 @@ A financial analysis app for students. Portfolio project. Full spec to come.
 - **Explain new concepts simply.** When a new tool, library, or idea comes up, give a short plain-English explanation. Suggest adding it to `LEARNING.md`.
 
 ## Setup
-- Python 3.12, managed with `uv`. Code lives in `src/finance_analyzer/`.
-- Run: `uv run finance-analyzer`
+- Python 3.12, managed with `uv`. Code lives in `src/datadough/`.
+- Run: `uv run datadough`
 “Always follow SPEC.md. If a request goes beyond v1 scope, say so before building it.”
