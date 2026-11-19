@@ -23,6 +23,9 @@ htmlcov/
 # Downloaded data (SEC cache, DuckDB file)
 data/
 
+# My private working notes, kept outside the repo since 2026-11-19
+docs/decision-log.md
+
 # The docs site that mkdocs build makes
 site/
 

@@ -14,6 +14,7 @@ red-flag scores and valuation, each explained with the company's own numbers.
 ## In these docs
 
 - **[Methodology](METHODOLOGY.md):** how each number is chosen from the SEC data, with real examples.
+- **[Design decisions](design-decisions.md):** the ten decisions that shape the numbers most, and why.
 - **[Accuracy](ACCURACY.md):** 95 figures for 10 companies checked against the filings themselves.
 - **[Coverage](COVERAGE.md):** what's found and what's missing for 30 very different companies.
 - **[Case study](case-study-apple-vs-coca-cola.md):** Apple vs Coca-Cola, made with the app's numbers.

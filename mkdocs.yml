@@ -9,11 +9,11 @@ edit_uri: edit/master/docs/
 docs_dir: docs
 exclude_docs: |
   README.md
-  decision-log.md
 
 nav:
   - Home: index.md
   - Methodology: METHODOLOGY.md
+  - Design decisions: design-decisions.md
   - Accuracy: ACCURACY.md
   - Coverage: COVERAGE.md
   - Case study: case-study-apple-vs-coca-cola.md

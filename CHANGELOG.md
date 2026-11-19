@@ -2,6 +2,12 @@
 
 What each version added, newest first. Dates are year-month-day.
 
+## Unreleased
+
+### Changed
+- **[docs/design-decisions.md](docs/design-decisions.md)** replaces the decision log, which is no longer
+  in the repository. It covers the ten decisions that shape the numbers most.
+
 ## 1.4.0 — 2026-11-14
 
 Data you can trace and check: every number links to its filing, the rules and the measured accuracy are
@@ -17,7 +23,7 @@ written down, and three kinds of wrong figures are fixed.
 - **Feedback:** a Feedback link when `FEEDBACK_URL` is set (https only), and "Report a wrong number" on
   every metric, opening a prefilled GitHub issue.
 - **Docs and repo:** a rewritten README with a demo GIF, a case study (Apple vs Coca-Cola), a code of
-  conduct, a security policy, a docs index, and the decision log moved to `docs/decision-log.md`.
+  conduct, a security policy, a docs index, and the decision log moved into `docs/`.
 
 ### Changed
 - **Revenue prefers total revenues** over revenue from contracts with customers when a company tags both.
