@@ -2,9 +2,9 @@
 
 **Company financials you can trace back to the filing: every number links to the SEC document it came from.**
 
-Datadough is a free, open-source research app for students. It reads a company's annual reports from SEC
-EDGAR, puts them on one standard set of line items, and shows five years of statements, 19 ratios,
-red-flag scores and valuation, each explained with the company's own numbers.
+I built Datadough for students. It's a free, open-source research app. It reads a company's annual
+reports from SEC EDGAR and puts them on one standard set of line items. Then it shows five years of
+statements, 19 ratios, red-flag scores and valuation, each explained with the company's own numbers.
 
 [Try the app](https://datadough.streamlit.app){ .md-button .md-button--primary }
 [Source on GitHub](https://github.com/VedantParashar/finance-analyzer){ .md-button }

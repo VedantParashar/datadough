@@ -19,8 +19,9 @@ The SEC asks every program that downloads its data to say who it is. Set your na
 export SEC_USER_AGENT="Your Name you@example.com"
 ```
 
-The first call for a company downloads its filings (a second or two); after that everything comes from
-a local cache in `./data` under the folder you run Python from, refreshed by itself once it's 7 days old.
+The first call for a company downloads its filings, which takes a second or two. After that everything
+comes from a local cache in `./data`, under the folder you run Python from. The cache refreshes itself
+once it's 7 days old.
 
 ## Quick start
 

@@ -66,8 +66,8 @@ Once the package is on PyPI: `pip install "datadough[mcp]"`, then the command is
 
 ## Good to know
 
-- The numbers are the app's, chosen by the rules in [METHODOLOGY.md](METHODOLOGY.md); valuation ratios
-  (P/E and so on) aren't included because they need a live share price.
+- The numbers are the app's, chosen by the rules in [METHODOLOGY.md](METHODOLOGY.md). Valuation ratios
+  (P/E and so on) aren't included, because they need a live share price.
 - Errors come back as plain messages the assistant can pass on: an unknown ticker, a fund with no
   financial statements, a fiscal year that isn't stored, or the SEC being unreachable.
 - Not investment advice.

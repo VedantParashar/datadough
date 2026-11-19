@@ -10,10 +10,10 @@
 [![python](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-A free, open-source research app for students doing case studies, stock pitches and theses. Type a
-ticker: it reads the company's annual reports from SEC EDGAR, puts them on one standard set of line
-items, and shows five years of statements, 19 ratios, red-flag scores and valuation, each explained in
-plain English with the company's own numbers.
+I built Datadough for students doing case studies, stock pitches and theses. It's free and open source.
+Type a ticker and it reads the company's annual reports from SEC EDGAR. It puts them on one standard set
+of line items and shows five years of statements, 19 ratios, red-flag scores and valuation. Each one is
+explained in plain English with the company's own numbers.
 
 ![Demo: search for AAPL, open a metric's sources, see the Source column, compare AAPL, KO and NVDA](docs/demo.gif)
 
@@ -23,20 +23,21 @@ Python API).
 ## How Datadough differs
 
 - **Official SEC data.** Every statement figure comes from the XBRL data companies file with the US
-  Securities and Exchange Commission (SEC EDGAR) alongside their annual reports. Nothing is scraped
-  from third-party sites or estimated; only today's share price and exchange rates come from elsewhere
-  (Yahoo Finance), and they're used for the five valuation ratios alone.
-- **Traceable.** Every line item and every input to a ratio links to the exact filing it was read from,
-  with the form type and filing date, in the app and in the [Python API](docs/python-api.md). Values the app calculates (when a company doesn't report a total)
-  say how; [METHODOLOGY.md](docs/METHODOLOGY.md) explains each rule with real examples, including
-  restatements and stock splits.
+  Securities and Exchange Commission (SEC EDGAR) with their annual reports. Nothing is scraped from
+  other sites or estimated. Only today's share price and exchange rates come from elsewhere (Yahoo
+  Finance), and only the five valuation ratios use them.
+- **Traceable.** Every line item and every input to a ratio links to the filing it was read from, with
+  the form type and filing date. That's true in the app and in the [Python API](docs/python-api.md).
+  When the app calculates a value (say, a total the company doesn't report), it says how.
+  [METHODOLOGY.md](docs/METHODOLOGY.md) explains each rule with real examples, including restatements
+  and stock splits.
 - **Validated.** [ACCURACY.md](docs/ACCURACY.md) checks 10 headline figures for 10 companies against
-  the filings' own statements: 93 of 95 match, and both differences are explained. A balance check runs on
-  every stored year, and [COVERAGE.md](docs/COVERAGE.md) lists what's found and missing for 30 very
-  different companies. A value that can't be calculated says why, and a missing value is never treated as
-  zero.
-- **Explained.** Every metric shows its formula filled in with the company's own numbers, what it means,
-  what a good value looks like and the common traps, written for students.
+  the filings' own statements. 93 of 95 match, and both differences are explained. A balance check runs
+  on every stored year. [COVERAGE.md](docs/COVERAGE.md) lists what's found and missing for 30 very
+  different companies. A value that can't be calculated says why, and a missing value is never treated
+  as zero.
+- **Explained.** Every metric shows its formula with the company's own numbers, what it means, what a
+  good value looks like and the common traps. It's written for students.
 
 ## Features
 
@@ -72,8 +73,8 @@ Finance through [yfinance](https://github.com/ranaroussi/yfinance). Not investme
 
 ## Run it on your computer
 
-The SEC asks every client to say who it is: copy `.env.example` to `.env` and put your name and email
-in `SEC_USER_AGENT`. With [uv](https://docs.astral.sh/uv/):
+The SEC asks every program that reads its data to say who it is. Copy `.env.example` to `.env` and put
+your name and email in `SEC_USER_AGENT`. With [uv](https://docs.astral.sh/uv/):
 
 ```bash
 git clone https://github.com/VedantParashar/finance-analyzer.git
@@ -103,11 +104,9 @@ Then open http://localhost:8501. With Docker instead: `docker compose up --build
 
 ## How this was built
 
-Datadough was built with [Claude Code](https://claude.com/claude-code), Anthropic's AI coding tool,
-which wrote most of the code, tests and documents. I'm the owner and a beginner programmer: I wrote the
-spec and each session's task list, made the design decisions, and reviewed and merged every pull
-request. The main design decisions and their reasons are in
-[docs/design-decisions.md](docs/design-decisions.md); the terms I learned along the way are in
+I designed Datadough and made the product, data and accounting decisions. Claude Code helped write the
+code; I reviewed and tested every change. The main decisions and my reasons are in
+[docs/design-decisions.md](docs/design-decisions.md). The terms I learned along the way are in
 [LEARNING.md](LEARNING.md).
 
 ## Contributing and license

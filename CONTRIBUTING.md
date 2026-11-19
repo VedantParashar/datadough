@@ -1,7 +1,7 @@
 # Contributing
 
-Thanks for helping. This is a student portfolio project, so small, clear changes are valued over big
-clever ones. Found a wrong number? An [issue](https://github.com/VedantParashar/finance-analyzer/issues/new/choose)
+Thanks for helping. This is my student portfolio project, so I'd rather have small, clear changes than
+big clever ones. Found a wrong number? An [issue](https://github.com/VedantParashar/finance-analyzer/issues/new/choose)
 with the ticker and a screenshot is already a contribution.
 
 ## Setup
