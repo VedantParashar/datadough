@@ -8,7 +8,7 @@
 | [ACCURACY.md](ACCURACY.md) | 95 figures from 10 companies checked against the filings themselves |
 | [COVERAGE.md](COVERAGE.md) | What's found and missing for 30 very different companies |
 | [case-study-apple-vs-coca-cola.md](case-study-apple-vs-coca-cola.md) | A short analysis made with the app's numbers |
-| [decision-log.md](decision-log.md) | Every decision made while building the app, with reasons and rejected alternatives |
+| [design-decisions.md](design-decisions.md) | The ten decisions that shape the numbers most, and why |
 | [../DESIGN.md](../DESIGN.md) | The design system: colours, type, components, charts |
 | [../SPEC.md](../SPEC.md) | What version 1 covers, and what it doesn't |
 | [../DEPLOY.md](../DEPLOY.md) | Hosting your own copy on Streamlit Community Cloud |
